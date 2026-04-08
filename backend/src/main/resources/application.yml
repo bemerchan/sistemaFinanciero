@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:financial_db}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:financial_db}
+    username: ${PGUSER:postgres}
+    password: ${PGPASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -19,7 +19,7 @@ spring:
       write-dates-as-timestamps: false
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:9000}
 
 springdoc:
   api-docs:
