@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RepositoryRestController
 @RequiredArgsConstructor
-@Tag(name = "Transacciones - Escritura", description = "Registro de transacciones bancarias. Consultas via Spring Data REST en /api/v1/transactions")
+@Tag(name = "Transacciones", description = "Registro de transacciones: POST via controlador, GET via Spring Data REST en /api/v1/transactions")
 @CrossOrigin(origins = "*")
 public class TransactionController {
 
@@ -26,8 +26,8 @@ public class TransactionController {
     @PostMapping("/transactions/account/{accountId}")
     @ResponseBody
     @Operation(summary = "Registrar transacción",
-            description = "Registra una consignación (DEPOSIT) o retiro (WITHDRAWAL) en una cuenta. "
-                    + "Los retiros requieren saldo suficiente. Las cuentas de ahorro no pueden quedar con saldo negativo.")
+            description = "Registra una consignación (DEPOSIT) o retiro (WITHDRAWAL). "
+                    + "Aplica reglas: cuenta activa, saldo suficiente, cuentas de ahorro no quedan en negativo.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Transacción registrada exitosamente"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),

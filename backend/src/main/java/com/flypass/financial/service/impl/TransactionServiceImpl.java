@@ -45,7 +45,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         BigDecimal newBalance;
-
         if (request.getTransactionType() == TransactionType.DEPOSIT) {
             newBalance = account.getBalance().add(request.getAmount());
         } else {
@@ -61,25 +60,22 @@ public class TransactionServiceImpl implements TransactionService {
                 .amount(request.getAmount())
                 .balanceAfter(newBalance)
                 .description(request.getDescription())
-                .account(account)
+                .accountId(accountId)
                 .build();
 
         Transaction savedTransaction = transactionRepository.save(transaction);
         log.info("Transacción registrada con ID: {}, nuevo saldo: ${}", savedTransaction.getId(), newBalance);
-        return mapToResponse(savedTransaction);
+        return mapToResponse(savedTransaction, account);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<TransactionResponse> getTransactionsByAccount(Long accountId) {
         log.info("Listando transacciones de cuenta ID: {}", accountId);
-
-        if (!accountRepository.existsById(accountId)) {
-            throw new ResourceNotFoundException("Cuenta", accountId);
-        }
-
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cuenta", accountId));
         return transactionRepository.findByAccountIdOrderByCreatedAtDesc(accountId).stream()
-                .map(this::mapToResponse)
+                .map(t -> mapToResponse(t, account))
                 .collect(Collectors.toList());
     }
 
@@ -87,14 +83,11 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional(readOnly = true)
     public List<TransactionResponse> getLastTransactionsByAccount(Long accountId, int limit) {
         log.info("Listando últimas {} transacciones de cuenta ID: {}", limit, accountId);
-
-        if (!accountRepository.existsById(accountId)) {
-            throw new ResourceNotFoundException("Cuenta", accountId);
-        }
-
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cuenta", accountId));
         Pageable pageable = PageRequest.of(0, limit);
         return transactionRepository.findByAccountIdOrderByCreatedAtDesc(accountId, pageable).stream()
-                .map(this::mapToResponse)
+                .map(t -> mapToResponse(t, account))
                 .collect(Collectors.toList());
     }
 
@@ -102,7 +95,6 @@ public class TransactionServiceImpl implements TransactionService {
         if (account.getBalance().compareTo(amount) < 0) {
             throw new InsufficientFundsException(account.getBalance(), amount);
         }
-
         BigDecimal newBalance = account.getBalance().subtract(amount);
         if (account.getAccountType() == AccountType.SAVINGS
                 && newBalance.compareTo(BigDecimal.ZERO) < 0) {
@@ -111,15 +103,14 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private TransactionResponse mapToResponse(Transaction transaction) {
-        Account account = transaction.getAccount();
+    private TransactionResponse mapToResponse(Transaction transaction, Account account) {
         return TransactionResponse.builder()
                 .id(transaction.getId())
                 .transactionType(transaction.getTransactionType())
                 .amount(transaction.getAmount())
                 .balanceAfter(transaction.getBalanceAfter())
                 .description(transaction.getDescription())
-                .accountId(account.getId())
+                .accountId(transaction.getAccountId())
                 .accountNumber(account.getAccountNumber())
                 .createdAt(transaction.getCreatedAt())
                 .build();

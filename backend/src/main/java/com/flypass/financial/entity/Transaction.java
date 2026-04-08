@@ -37,9 +37,8 @@ public class Transaction {
     @Column(length = 255)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @Column(name = "account_id", nullable = false)
+    private Long accountId;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)

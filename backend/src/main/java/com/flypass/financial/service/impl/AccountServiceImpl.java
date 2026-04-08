@@ -37,8 +37,9 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse createAccount(AccountRequest request) {
         log.info("Creando cuenta para cliente ID: {}", request.getCustomerId());
 
-        Customer customer = customerRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente", request.getCustomerId()));
+        if (!customerRepository.existsById(request.getCustomerId())) {
+            throw new ResourceNotFoundException("Cliente", request.getCustomerId());
+        }
 
         String accountNumber = generateUniqueAccountNumber(request.getAccountType());
 
@@ -47,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
                 .accountType(request.getAccountType())
                 .status(Account.AccountStatus.ACTIVE)
                 .balance(BigDecimal.ZERO)
-                .customer(customer)
+                .customerId(request.getCustomerId())
                 .build();
 
         Account savedAccount = accountRepository.save(account);
@@ -59,11 +60,9 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(readOnly = true)
     public List<AccountResponse> getAccountsByCustomer(Long customerId) {
         log.info("Listando cuentas para cliente ID: {}", customerId);
-
         if (!customerRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Cliente", customerId);
         }
-
         return accountRepository.findByCustomerId(customerId).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -110,15 +109,18 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private AccountResponse mapToResponse(Account account) {
-        Customer customer = account.getCustomer();
+        String customerFullName = customerRepository.findById(account.getCustomerId())
+                .map(c -> c.getFirstName() + " " + c.getLastName())
+                .orElse("Cliente no encontrado");
+
         return AccountResponse.builder()
                 .id(account.getId())
                 .accountNumber(account.getAccountNumber())
                 .accountType(account.getAccountType())
                 .status(account.getStatus())
                 .balance(account.getBalance())
-                .customerId(customer.getId())
-                .customerFullName(customer.getFirstName() + " " + customer.getLastName())
+                .customerId(account.getCustomerId())
+                .customerFullName(customerFullName)
                 .createdAt(account.getCreatedAt())
                 .updatedAt(account.getUpdatedAt())
                 .build();

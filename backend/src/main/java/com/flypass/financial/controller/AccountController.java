@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RepositoryRestController
 @RequiredArgsConstructor
-@Tag(name = "Cuentas - Escritura", description = "Creación de cuentas bancarias. Consultas y eliminación via Spring Data REST en /api/v1/accounts")
+@Tag(name = "Cuentas", description = "Gestión de cuentas bancarias: POST via controlador, GET y DELETE via Spring Data REST en /api/v1/accounts")
 @CrossOrigin(origins = "*")
 public class AccountController {
 
@@ -26,7 +26,7 @@ public class AccountController {
     @PostMapping("/accounts")
     @ResponseBody
     @Operation(summary = "Crear cuenta bancaria",
-            description = "Crea una cuenta de ahorro (prefijo 53XXXXXXXX) o corriente (prefijo 33XXXXXXXX) vinculada a un cliente. El número de cuenta es autogenerado y único.")
+            description = "Crea una cuenta de ahorro (53XXXXXXXX) o corriente (33XXXXXXXX) para un cliente. Número de cuenta autogenerado y único.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Cuenta creada exitosamente"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
@@ -42,9 +42,9 @@ public class AccountController {
     @GetMapping("/accounts/{id}/balance")
     @ResponseBody
     @Operation(summary = "Consultar saldo de cuenta",
-            description = "Retorna el saldo actual de una cuenta bancaria específica.")
+            description = "Retorna el saldo actual de una cuenta bancaria.")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Saldo de la cuenta"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Saldo consultado exitosamente"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Cuenta no encontrada")
     })
     public ResponseEntity<ApiResponse<AccountResponse>> getAccountBalance(

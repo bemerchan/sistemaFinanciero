@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RepositoryRestController
 @RequiredArgsConstructor
-@Tag(name = "Clientes - Escritura", description = "Creación y actualización de clientes. Consultas y eliminación via Spring Data REST en /api/v1/customers")
+@Tag(name = "Clientes", description = "Gestión de clientes: POST y PUT via controlador, GET y DELETE via Spring Data REST en /api/v1/customers")
 @CrossOrigin(origins = "*")
 public class CustomerController {
 
@@ -26,7 +26,7 @@ public class CustomerController {
     @PostMapping("/customers")
     @ResponseBody
     @Operation(summary = "Crear un nuevo cliente",
-            description = "Crea un nuevo cliente. No se permiten menores de 18 años ni correos/identificaciones duplicados.")
+            description = "Crea un nuevo cliente. Valida mayoría de edad, unicidad de correo e identificación.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Cliente creado exitosamente"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
@@ -43,7 +43,7 @@ public class CustomerController {
     @PutMapping("/customers/{id}")
     @ResponseBody
     @Operation(summary = "Actualizar cliente",
-            description = "Actualiza los datos de un cliente existente.")
+            description = "Actualiza los datos de un cliente existente. Valida unicidad de correo e identificación.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Cliente actualizado exitosamente"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),

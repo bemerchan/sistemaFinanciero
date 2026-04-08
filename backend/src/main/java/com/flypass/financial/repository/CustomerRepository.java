@@ -25,6 +25,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Optional<Customer> findByIdentificationNumber(String identificationNumber);
 
     @RestResource(exported = false)
-    @Query("SELECT COUNT(a) > 0 FROM Account a WHERE a.customer.id = :customerId")
+    @Query("SELECT COUNT(a) > 0 FROM Account a WHERE a.customerId = :customerId")
     boolean hasAccounts(@Param("customerId") Long customerId);
 }

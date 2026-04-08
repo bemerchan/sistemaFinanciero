@@ -11,8 +11,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "accounts")
@@ -43,9 +41,8 @@ public class Account {
     @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @Column(name = "customer_id", nullable = false)
+    private Long customerId;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -54,10 +51,6 @@ public class Account {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<Transaction> transactions = new ArrayList<>();
 
     public enum AccountType {
         SAVINGS, CHECKING
