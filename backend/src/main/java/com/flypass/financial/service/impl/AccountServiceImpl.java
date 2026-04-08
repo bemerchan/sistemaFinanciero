@@ -4,13 +4,13 @@ import com.flypass.financial.dto.request.AccountRequest;
 import com.flypass.financial.dto.response.AccountResponse;
 import com.flypass.financial.entity.Account;
 import com.flypass.financial.entity.Account.AccountType;
-import com.flypass.financial.entity.Customer;
-import com.flypass.financial.exception.ResourceNotFoundException;
+import com.flypass.financial.exception.ApiException;
 import com.flypass.financial.repository.AccountRepository;
 import com.flypass.financial.repository.CustomerRepository;
 import com.flypass.financial.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +38,8 @@ public class AccountServiceImpl implements AccountService {
         log.info("Creando cuenta para cliente ID: {}", request.getCustomerId());
 
         if (!customerRepository.existsById(request.getCustomerId())) {
-            throw new ResourceNotFoundException("Cliente", request.getCustomerId());
+            throw new ApiException(HttpStatus.NOT_FOUND,
+                    String.format("Cliente con ID %d no encontrado", request.getCustomerId()));
         }
 
         String accountNumber = generateUniqueAccountNumber(request.getAccountType());
@@ -61,7 +62,8 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountResponse> getAccountsByCustomer(Long customerId) {
         log.info("Listando cuentas para cliente ID: {}", customerId);
         if (!customerRepository.existsById(customerId)) {
-            throw new ResourceNotFoundException("Cliente", customerId);
+            throw new ApiException(HttpStatus.NOT_FOUND,
+                    String.format("Cliente con ID %d no encontrado", customerId));
         }
         return accountRepository.findByCustomerId(customerId).stream()
                 .map(this::mapToResponse)
@@ -73,7 +75,8 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse getAccountById(Long id) {
         log.info("Buscando cuenta con ID: {}", id);
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cuenta", id));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                        String.format("Cuenta con ID %d no encontrada", id)));
         return mapToResponse(account);
     }
 
@@ -82,7 +85,8 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse getAccountBalance(Long id) {
         log.info("Consultando saldo de cuenta ID: {}", id);
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cuenta", id));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                        String.format("Cuenta con ID %d no encontrada", id)));
         return mapToResponse(account);
     }
 
@@ -101,7 +105,8 @@ public class AccountServiceImpl implements AccountService {
             accountNumber = sb.toString();
             attempts++;
             if (attempts > maxAttempts) {
-                throw new IllegalStateException("No se pudo generar un número de cuenta único");
+                throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "No se pudo generar un número de cuenta único. Por favor intente de nuevo.");
             }
         } while (accountRepository.existsByAccountNumber(accountNumber));
 

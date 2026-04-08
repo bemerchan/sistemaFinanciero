@@ -3,14 +3,12 @@ package com.flypass.financial.service.impl;
 import com.flypass.financial.dto.request.CustomerRequest;
 import com.flypass.financial.dto.response.CustomerResponse;
 import com.flypass.financial.entity.Customer;
-import com.flypass.financial.exception.BusinessException;
-import com.flypass.financial.exception.ConflictException;
-import com.flypass.financial.exception.ResourceNotFoundException;
-import com.flypass.financial.exception.UnderageCustomerException;
+import com.flypass.financial.exception.ApiException;
 import com.flypass.financial.repository.CustomerRepository;
 import com.flypass.financial.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +33,12 @@ public class CustomerServiceImpl implements CustomerService {
         validateAge(request.getBirthDate());
 
         if (customerRepository.existsByEmail(request.getEmail())) {
-            throw new ConflictException(
+            throw new ApiException(HttpStatus.CONFLICT,
                     String.format("Ya existe un cliente con el correo '%s'", request.getEmail()));
         }
 
         if (customerRepository.existsByIdentificationNumber(request.getIdentificationNumber())) {
-            throw new ConflictException(
+            throw new ApiException(HttpStatus.CONFLICT,
                     String.format("Ya existe un cliente con el número de identificación '%s'",
                             request.getIdentificationNumber()));
         }
@@ -73,7 +71,8 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponse getCustomerById(Long id) {
         log.info("Buscando cliente con ID: {}", id);
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente", id));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                        String.format("Cliente con ID %d no encontrado", id)));
         return mapToResponse(customer);
     }
 
@@ -83,19 +82,20 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("Actualizando cliente con ID: {}", id);
 
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente", id));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                        String.format("Cliente con ID %d no encontrado", id)));
 
         validateAge(request.getBirthDate());
 
         if (!customer.getEmail().equals(request.getEmail()) &&
                 customerRepository.existsByEmail(request.getEmail())) {
-            throw new ConflictException(
+            throw new ApiException(HttpStatus.CONFLICT,
                     String.format("Ya existe un cliente con el correo '%s'", request.getEmail()));
         }
 
         if (!customer.getIdentificationNumber().equals(request.getIdentificationNumber()) &&
                 customerRepository.existsByIdentificationNumber(request.getIdentificationNumber())) {
-            throw new ConflictException(
+            throw new ApiException(HttpStatus.CONFLICT,
                     String.format("Ya existe un cliente con el número de identificación '%s'",
                             request.getIdentificationNumber()));
         }
@@ -118,10 +118,11 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("Eliminando cliente con ID: {}", id);
 
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente", id));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                        String.format("Cliente con ID %d no encontrado", id)));
 
         if (customerRepository.hasAccounts(id)) {
-            throw new BusinessException(
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "No se puede eliminar el cliente porque tiene cuentas bancarias vinculadas");
         }
 
@@ -132,7 +133,8 @@ public class CustomerServiceImpl implements CustomerService {
     private void validateAge(LocalDate birthDate) {
         int age = Period.between(birthDate, LocalDate.now()).getYears();
         if (age < MINIMUM_AGE) {
-            throw new UnderageCustomerException();
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "No se permite registrar clientes menores de edad (menores de 18 años)");
         }
     }
 

@@ -6,9 +6,7 @@ import com.flypass.financial.entity.Account;
 import com.flypass.financial.entity.Account.AccountType;
 import com.flypass.financial.entity.Transaction;
 import com.flypass.financial.entity.Transaction.TransactionType;
-import com.flypass.financial.exception.BusinessException;
-import com.flypass.financial.exception.InsufficientFundsException;
-import com.flypass.financial.exception.ResourceNotFoundException;
+import com.flypass.financial.exception.ApiException;
 import com.flypass.financial.repository.AccountRepository;
 import com.flypass.financial.repository.TransactionRepository;
 import com.flypass.financial.service.TransactionService;
@@ -16,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,10 +37,12 @@ public class TransactionServiceImpl implements TransactionService {
                 request.getTransactionType(), request.getAmount(), accountId);
 
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cuenta", accountId));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                        String.format("Cuenta con ID %d no encontrada", accountId)));
 
         if (account.getStatus() == Account.AccountStatus.INACTIVE) {
-            throw new BusinessException("No se pueden realizar transacciones en una cuenta inactiva");
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "No se pueden realizar transacciones en una cuenta inactiva");
         }
 
         BigDecimal newBalance;
@@ -73,7 +74,8 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionResponse> getTransactionsByAccount(Long accountId) {
         log.info("Listando transacciones de cuenta ID: {}", accountId);
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cuenta", accountId));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                        String.format("Cuenta con ID %d no encontrada", accountId)));
         return transactionRepository.findByAccountIdOrderByCreatedAtDesc(accountId).stream()
                 .map(t -> mapToResponse(t, account))
                 .collect(Collectors.toList());
@@ -84,7 +86,8 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionResponse> getLastTransactionsByAccount(Long accountId, int limit) {
         log.info("Listando últimas {} transacciones de cuenta ID: {}", limit, accountId);
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cuenta", accountId));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
+                        String.format("Cuenta con ID %d no encontrada", accountId)));
         Pageable pageable = PageRequest.of(0, limit);
         return transactionRepository.findByAccountIdOrderByCreatedAtDesc(accountId, pageable).stream()
                 .map(t -> mapToResponse(t, account))
@@ -93,12 +96,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     private void validateWithdrawal(Account account, BigDecimal amount) {
         if (account.getBalance().compareTo(amount) < 0) {
-            throw new InsufficientFundsException(account.getBalance(), amount);
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    String.format("Fondos insuficientes. Saldo actual: $%.2f, Monto solicitado: $%.2f",
+                            account.getBalance(), amount));
         }
         BigDecimal newBalance = account.getBalance().subtract(amount);
         if (account.getAccountType() == AccountType.SAVINGS
                 && newBalance.compareTo(BigDecimal.ZERO) < 0) {
-            throw new BusinessException(
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "Las cuentas de ahorro no pueden tener saldo negativo. Saldo mínimo: $0");
         }
     }

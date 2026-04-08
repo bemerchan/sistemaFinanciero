@@ -1,11 +1,12 @@
 package com.flypass.financial.handler;
 
 import com.flypass.financial.entity.Customer;
-import com.flypass.financial.exception.BusinessException;
+import com.flypass.financial.exception.ApiException;
 import com.flypass.financial.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.rest.core.annotation.HandleBeforeDelete;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,10 +19,9 @@ public class CustomerEventHandler {
     @HandleBeforeDelete
     public void handleBeforeDelete(Customer customer) {
         if (customerRepository.hasAccounts(customer.getId())) {
-            throw new BusinessException(
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
                 "No se puede eliminar el cliente porque tiene cuentas bancarias asociadas. " +
-                "Elimine primero las cuentas del cliente."
-            );
+                "Elimine primero las cuentas del cliente.");
         }
     }
 }

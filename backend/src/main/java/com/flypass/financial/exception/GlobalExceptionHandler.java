@@ -26,10 +26,10 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
-        log.warn("Recurso no encontrado: {}", ex.getMessage());
-        return build(HttpStatus.NOT_FOUND, ex.getMessage(), null);
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
+        log.warn("[{}] {}", ex.getHttpStatus(), ex.getMessage());
+        return build(ex.getHttpStatus(), ex.getMessage(), null);
     }
 
     @ExceptionHandler(org.springframework.data.rest.webmvc.ResourceNotFoundException.class)
@@ -37,30 +37,6 @@ public class GlobalExceptionHandler {
             org.springframework.data.rest.webmvc.ResourceNotFoundException ex) {
         log.warn("Recurso SDR no encontrado: {}", ex.getMessage());
         return build(HttpStatus.NOT_FOUND, "El recurso solicitado no fue encontrado", null);
-    }
-
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
-        log.warn("Regla de negocio violada: {}", ex.getMessage());
-        return build(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), null);
-    }
-
-    @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
-        log.warn("Conflicto de datos: {}", ex.getMessage());
-        return build(HttpStatus.CONFLICT, ex.getMessage(), null);
-    }
-
-    @ExceptionHandler(UnderageCustomerException.class)
-    public ResponseEntity<ErrorResponse> handleUnderage(UnderageCustomerException ex) {
-        log.warn("Cliente menor de edad: {}", ex.getMessage());
-        return build(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), null);
-    }
-
-    @ExceptionHandler(InsufficientFundsException.class)
-    public ResponseEntity<ErrorResponse> handleInsufficientFunds(InsufficientFundsException ex) {
-        log.warn("Fondos insuficientes: {}", ex.getMessage());
-        return build(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), null);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -100,20 +76,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex) {
         log.warn("Violación de integridad de datos: {}", ex.getMessage());
-        String message = "Violación de integridad de datos: el registro ya existe o tiene dependencias";
-        if (ex.getMessage() != null && ex.getMessage().contains("unique")) {
-            message = "Ya existe un registro con los mismos datos únicos";
-        }
+        String message = ex.getMessage() != null && ex.getMessage().contains("unique")
+                ? "Ya existe un registro con los mismos datos únicos"
+                : "Violación de integridad de datos: el registro ya existe o tiene dependencias";
         return build(HttpStatus.CONFLICT, message, null);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleMessageNotReadable(HttpMessageNotReadableException ex) {
         log.warn("Cuerpo de la solicitud inválido: {}", ex.getMessage());
-        String detail = "El cuerpo de la solicitud es inválido o está mal formado";
-        if (ex.getMessage() != null && ex.getMessage().contains("Cannot deserialize value of type")) {
-            detail = "Valor de campo inválido: verifique los tipos y formatos de los campos";
-        }
+        String detail = ex.getMessage() != null && ex.getMessage().contains("Cannot deserialize value of type")
+                ? "Valor de campo inválido: verifique los tipos y formatos de los campos"
+                : "El cuerpo de la solicitud es inválido o está mal formado";
         return build(HttpStatus.BAD_REQUEST, detail, null);
     }
 
