@@ -1,27 +1,77 @@
-# Workspace
+# Mini Sistema Financiero - Flypass
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+Prueba técnica Flypass: aplicación web para gestión de clientes y cuentas bancarias.
+El proyecto está organizado como un monorepo con backend Java/Spring Boot y frontend Angular (próximamente).
 
 ## Stack
 
+### Backend (Java / Spring Boot)
+- **Framework**: Spring Boot 3.2.5
+- **Java version**: 17 (GraalVM 22.3)
+- **Database**: PostgreSQL + Spring Data JPA (Hibernate)
+- **Validation**: Bean Validation (jakarta.validation)
+- **Documentation**: SpringDoc OpenAPI 2.x (Swagger UI)
+- **Utilities**: Lombok
+- **Build**: Maven 3.8.6
+
+### Frontend (Angular — próximamente)
+- **Framework**: Angular (última LTS)
+- **CSS**: Angular Material + Tailwind CSS
+
+### Monorepo tooling (Node.js)
 - **Monorepo tool**: pnpm workspaces
 - **Node.js version**: 24
 - **Package manager**: pnpm
 - **TypeScript version**: 5.9
-- **API framework**: Express 5
-- **Database**: PostgreSQL + Drizzle ORM
-- **Validation**: Zod (`zod/v4`), `drizzle-zod`
-- **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
+
+## Project Structure
+
+```
+/
+├── backend/                    # Spring Boot API
+│   ├── pom.xml
+│   └── src/main/java/com/flypass/financial/
+│       ├── config/             # CORS, JPA, Swagger config
+│       ├── controller/         # REST controllers
+│       ├── dto/
+│       │   ├── request/        # Input DTOs
+│       │   └── response/       # Output DTOs
+│       ├── entity/             # JPA entities
+│       ├── exception/          # Custom exceptions + GlobalExceptionHandler
+│       ├── repository/         # Spring Data JPA repositories
+│       └── service/
+│           └── impl/           # Service implementations
+├── README.md                   # Project documentation
+└── artifacts/                  # Node.js artifacts (legacy)
+```
 
 ## Key Commands
 
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- `pnpm --filter @workspace/api-server run dev` — run API server locally
+### Backend
+- `cd backend && mvn clean compile` — compile
+- `cd backend && mvn spring-boot:run` — run server (requires PostgreSQL)
+- `cd backend && mvn test` — run tests
 
-See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+### Backend Environment Variables
+- `DB_HOST` (default: localhost)
+- `DB_PORT` (default: 5432)
+- `DB_NAME` (default: financial_db)
+- `DB_USERNAME` (default: postgres)
+- `DB_PASSWORD` (default: postgres)
+- `SERVER_PORT` (default: 8080)
+
+## API Endpoints
+
+### Customers: `/api/v1/customers`
+- POST, GET, GET/{id}, PUT/{id}, DELETE/{id}
+
+### Accounts: `/api/v1/accounts`
+- POST, GET/customer/{customerId}, GET/{id}, GET/{id}/balance
+
+### Transactions: `/api/v1/transactions`
+- POST/account/{accountId}, GET/account/{accountId}, GET/account/{accountId}/last
+
+## Swagger UI
+Available at: http://localhost:8080/swagger-ui.html
