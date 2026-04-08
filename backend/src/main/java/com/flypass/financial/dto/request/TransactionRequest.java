@@ -15,12 +15,16 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class TransactionRequest {
 
-    @NotNull(message = "El tipo de transacción es requerido (DEPOSIT o WITHDRAWAL)")
+    @NotNull(message = "El tipo de transacción es obligatorio. Valores válidos: DEPOSIT (consignación), WITHDRAWAL (retiro)")
     private TransactionType transactionType;
 
-    @NotNull(message = "El monto es requerido")
-    @DecimalMin(value = "0.01", message = "El monto debe ser mayor a 0")
-    @Digits(integer = 13, fraction = 2, message = "El monto no puede exceder 13 enteros y 2 decimales")
+    @NotNull(message = "El monto de la transacción es obligatorio")
+    @DecimalMin(value = "0.01", inclusive = true,
+            message = "El monto debe ser mayor a $0.00 (mínimo $0.01)")
+    @DecimalMax(value = "999999999999999.99", inclusive = true,
+            message = "El monto no puede exceder $999,999,999,999,999.99")
+    @Digits(integer = 15, fraction = 2,
+            message = "El monto debe tener máximo 15 dígitos enteros y 2 decimales")
     private BigDecimal amount;
 
     @Size(max = 255, message = "La descripción no puede exceder 255 caracteres")
