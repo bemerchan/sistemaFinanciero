@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "dev": "NG_CLI_ANALYTICS=false ng serve --host 0.0.0.0 --port $PORT --proxy-config proxy.conf.json --allowed-hosts all",
+    "dev": "NG_CLI_ANALYTICS=false ng serve --host 0.0.0.0 --port $PORT --proxy-config proxy.conf.json",
     "build": "NG_CLI_ANALYTICS=false ng build",
     "watch": "NG_CLI_ANALYTICS=false ng build --watch --configuration development",
     "start": "NG_CLI_ANALYTICS=false ng serve --host 0.0.0.0 --port $PORT --proxy-config proxy.conf.json --allowed-hosts all"

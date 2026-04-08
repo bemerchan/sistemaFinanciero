@@ -26,38 +26,57 @@
     <!-- Customer Header Card -->
     <mat-card class="customer-header-card">
       <mat-card-content>
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <!-- Top row: avatar + name + balance -->
+        <div class="customer-top-row">
           <div class="customer-avatar">{{ initials }}</div>
-          <div class="customer-meta" style="flex:1">
+          <div class="customer-name-block">
             <h1>{{ customer.firstName }} {{ customer.lastName }}</h1>
             <p class="client-id">
-              {{ idTypeLabels[customer.identificationType] ?? customer.identificationType }}:
+              <span class="id-type-label">{{ idTypeLabels[customer.identificationType] ?? customer.identificationType }}</span>
               {{ customer.identificationNumber }}
             </p>
           </div>
-          <div class="total-balance">
-            <p class="label">Saldo total en cuentas</p>
-            <p class="amount">{{ formatCurrency(totalBalance) }}</p>
+          <div class="total-balance-block">
+            <p class="balance-label">Saldo total en cuentas</p>
+            <p class="balance-amount">{{ formatCurrency(totalBalance) }}</p>
           </div>
         </div>
 
-        <!-- Info Grid -->
-        <div class="info-grid" style="margin-top:20px;padding-top:16px;border-top:1px solid #f1f5f9;">
-          <div class="info-item">
-            <div class="label"><mat-icon>email</mat-icon> Correo</div>
-            <div class="value">{{ customer.email }}</div>
+        <!-- Divider -->
+        <div class="header-divider"></div>
+
+        <!-- Info grid -->
+        <div class="customer-info-grid">
+          <div class="customer-info-item">
+            <div class="info-label">
+              <mat-icon>email</mat-icon>
+              Correo electrónico
+            </div>
+            <div class="info-value">{{ customer.email }}</div>
           </div>
-          <div class="info-item">
-            <div class="label"><mat-icon>cake</mat-icon> Fecha de nacimiento</div>
-            <div class="value">{{ formatDate(customer.birthDate) }} · {{ calcAge(customer.birthDate) }} años</div>
+          <div class="customer-info-item">
+            <div class="info-label">
+              <mat-icon>cake</mat-icon>
+              Fecha de nacimiento
+            </div>
+            <div class="info-value">{{ formatDate(customer.birthDate) }} · {{ calcAge(customer.birthDate) }} años</div>
           </div>
-          <div class="info-item">
-            <div class="label"><mat-icon>account_balance</mat-icon> Cuentas</div>
-            <div class="value">{{ accounts.length }} total · {{ activeAccounts }} activa{{ activeAccounts !== 1 ? 's' : '' }}</div>
+          <div class="customer-info-item">
+            <div class="info-label">
+              <mat-icon>account_balance</mat-icon>
+              Cuentas
+            </div>
+            <div class="info-value">
+              {{ accounts.length }} total ·
+              <span style="color:#16a34a;font-weight:600">{{ activeAccounts }} activa{{ activeAccounts !== 1 ? 's' : '' }}</span>
+            </div>
           </div>
-          <div class="info-item">
-            <div class="label"><mat-icon>tag</mat-icon> ID Cliente</div>
-            <div class="value" style="font-family:monospace">#{{ customer.id }}</div>
+          <div class="customer-info-item">
+            <div class="info-label">
+              <mat-icon>tag</mat-icon>
+              ID Cliente
+            </div>
+            <div class="info-value" style="font-family:monospace">#{{ customer.id }}</div>
           </div>
         </div>
       </mat-card-content>

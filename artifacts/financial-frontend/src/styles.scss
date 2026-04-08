@@ -6,6 +6,7 @@ html, body {
   color: #1e293b;
 }
 
+/* ─── Navbar ─────────────────────────────────────────────── */
 .app-toolbar {
   background: #ffffff !important;
   color: #1e293b !important;
@@ -51,6 +52,7 @@ html, body {
   }
 }
 
+/* ─── Page layout ─────────────────────────────────────────── */
 .page-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -62,6 +64,8 @@ html, body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
 
   .header-left {
     display: flex;
@@ -94,15 +98,28 @@ html, body {
   }
 }
 
+/* ─── Card base ───────────────────────────────────────────── */
 .mat-mdc-card {
   border-radius: 12px !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04) !important;
   border: 1px solid #e2e8f0;
 }
 
+/* ─── Search bar ──────────────────────────────────────────── */
+.search-bar-wrap {
+  padding: 16px 16px 0 !important;
+}
+
 .search-field {
-  width: 320px;
+  width: 100%;
+  max-width: 380px;
+
   .mat-mdc-form-field-subscript-wrapper { display: none; }
+}
+
+/* ─── Table ───────────────────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
 }
 
 table.mat-mdc-table {
@@ -110,36 +127,83 @@ table.mat-mdc-table {
   background: white;
 
   .mat-mdc-header-cell {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    border-bottom-color: #e2e8f0;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+    padding: 0 16px;
   }
 
   .mat-mdc-cell {
     font-size: 13px;
     color: #334155;
-    border-bottom-color: #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
     padding: 12px 16px;
+    vertical-align: middle;
   }
 
   .mat-mdc-row:hover { background: #f8fafc; }
 
-  .id-cell { font-family: monospace; color: #94a3b8; font-size: 12px; }
-  .name-cell { font-weight: 500; color: #1e293b; }
+  .id-cell {
+    font-family: monospace;
+    color: #94a3b8;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .name-cell { font-weight: 600; color: #1e293b; }
   .email-cell { color: #64748b; }
+
+  .col-id { width: 60px; min-width: 60px; }
+  .col-center { text-align: center; }
+
+  .col-actions {
+    width: 130px;
+    min-width: 130px;
+    text-align: right;
+    white-space: nowrap;
+  }
 }
 
+/* ─── Action buttons ──────────────────────────────────────── */
+.actions-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  flex-shrink: 0;
+
+  .mat-icon {
+    font-size: 17px !important;
+    width: 17px !important;
+    height: 17px !important;
+    line-height: 17px !important;
+  }
+
+  &.view-btn .mat-icon { color: #3b82f6; }
+  &.edit-btn .mat-icon { color: #64748b; }
+  &.delete-btn .mat-icon { color: #ef4444; }
+}
+
+/* ─── Badges ──────────────────────────────────────────────── */
 .id-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  white-space: nowrap;
 
   .type-chip {
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
     background: #f1f5f9;
@@ -159,19 +223,11 @@ table.mat-mdc-table {
   background: #f1f5f9;
   color: #475569;
   border: 1px solid #e2e8f0;
-  font-weight: 500;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.action-btn {
-  width: 30px !important;
-  height: 30px !important;
-  line-height: 30px !important;
-
-  mat-icon { font-size: 16px; width: 16px; height: 16px; }
-
-  &.delete-btn { color: #ef4444 !important; }
-}
-
+/* ─── Empty / Error states ────────────────────────────────── */
 .empty-state {
   text-align: center;
   padding: 64px 24px;
@@ -179,246 +235,6 @@ table.mat-mdc-table {
 
   mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.4; }
   p { margin: 0 0 16px; font-size: 15px; font-weight: 500; }
-}
-
-.info-card {
-  margin-bottom: 24px;
-
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-  }
-
-  .info-item {
-    .label {
-      font-size: 11px;
-      color: #94a3b8;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-bottom: 4px;
-      mat-icon { font-size: 13px; width: 13px; height: 13px; }
-    }
-    .value {
-      font-size: 13px;
-      font-weight: 500;
-      color: #1e293b;
-      word-break: break-all;
-    }
-  }
-}
-
-.customer-header-card {
-  margin-bottom: 24px;
-
-  .customer-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: #3b82f6;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  .customer-meta {
-    h1 { margin: 0; font-size: 22px; font-weight: 700; }
-    .client-id { color: #94a3b8; font-size: 13px; margin: 0; }
-  }
-
-  .total-balance {
-    text-align: right;
-    .label { font-size: 11px; color: #94a3b8; margin: 0; }
-    .amount { font-size: 22px; font-weight: 700; color: #3b82f6; margin: 0; }
-  }
-}
-
-.accounts-section {
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      h2 { margin: 0; font-size: 17px; font-weight: 600; }
-      mat-icon { color: #3b82f6; }
-      .count-badge {
-        font-size: 11px;
-        padding: 2px 8px;
-        border-radius: 20px;
-        background: #f1f5f9;
-        color: #475569;
-        border: 1px solid #e2e8f0;
-        font-weight: 500;
-      }
-    }
-  }
-}
-
-.account-panel {
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 10px !important;
-  margin-bottom: 12px !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
-  background: white;
-
-  &.inactive { opacity: 0.7; }
-
-  .account-panel-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 4px 0;
-
-    .account-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      &.savings { background: #eff6ff; mat-icon { color: #3b82f6; } }
-      &.checking { background: #f0fdf4; mat-icon { color: #22c55e; } }
-      mat-icon { font-size: 18px; width: 18px; height: 18px; }
-    }
-
-    .account-info {
-      flex: 1;
-      .account-number {
-        font-family: monospace;
-        font-weight: 600;
-        font-size: 14px;
-        color: #1e293b;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .account-type { font-size: 12px; color: #64748b; }
-    }
-
-    .account-balance {
-      text-align: right;
-      .label { font-size: 11px; color: #94a3b8; }
-      .amount { font-size: 15px; font-weight: 700; color: #1e293b; }
-    }
-
-    .account-delete-btn {
-      mat-icon { font-size: 16px; color: #ef4444; }
-    }
-  }
-
-  .account-panel-content {
-    border-top: 1px solid #f1f5f9;
-    padding-top: 16px;
-  }
-
-  .inactive-msg {
-    color: #ef4444;
-    font-size: 12px;
-    font-weight: 500;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    mat-icon { font-size: 14px; width: 14px; height: 14px; }
-  }
-
-  .section-label {
-    font-size: 10px;
-    font-weight: 600;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 10px;
-    margin-top: 16px;
-  }
-}
-
-.status-chip {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 4px;
-  &.active { background: #dcfce7; color: #15803d; }
-  &.inactive { background: #f1f5f9; color: #64748b; }
-}
-
-.transaction-form {
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .full-width { width: 100%; }
-
-  .mat-mdc-form-field {
-    width: 100%;
-    .mat-mdc-form-field-subscript-wrapper { min-height: 16px; }
-  }
-
-  .submit-btn { width: 100%; margin-top: 4px; }
-}
-
-.tx-list {
-  .tx-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: #f8fafc;
-    border: 1px solid #f1f5f9;
-    margin-bottom: 6px;
-
-    &:last-child { margin-bottom: 0; }
-
-    .tx-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-        &.deposit { color: #22c55e; }
-        &.withdrawal { color: #ef4444; }
-      }
-
-      .tx-info {
-        .tx-type { font-size: 12px; font-weight: 600; color: #334155; }
-        .tx-desc { font-size: 11px; color: #94a3b8; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .tx-date { font-size: 11px; color: #94a3b8; }
-      }
-    }
-
-    .tx-right {
-      text-align: right;
-      .tx-amount {
-        font-size: 12px;
-        font-weight: 700;
-        &.deposit { color: #22c55e; }
-        &.withdrawal { color: #ef4444; }
-      }
-      .tx-balance { font-size: 11px; color: #94a3b8; }
-    }
-  }
-
-  .no-tx { color: #94a3b8; font-size: 12px; padding: 8px 0; }
 }
 
 .loading-state {
@@ -443,23 +259,130 @@ table.mat-mdc-table {
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
 }
 
-.mdc-text-field--outlined .mdc-notched-outline__leading,
-.mdc-text-field--outlined .mdc-notched-outline__notch,
-.mdc-text-field--outlined .mdc-notched-outline__trailing {
-  border-color: #e2e8f0 !important;
+/* ─── Customer detail header ──────────────────────────────── */
+.customer-header-card {
+  margin-bottom: 24px;
+
+  .customer-top-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .customer-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+  }
+
+  .customer-name-block {
+    flex: 1;
+    min-width: 180px;
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.3;
+    }
+
+    .client-id {
+      margin: 0;
+      font-size: 13px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .id-type-label {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 4px;
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        font-family: monospace;
+      }
+    }
+  }
+
+  .total-balance-block {
+    text-align: right;
+    flex-shrink: 0;
+
+    .balance-label {
+      font-size: 11px;
+      color: #94a3b8;
+      margin: 0 0 2px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .balance-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2563eb;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  .header-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 20px 0 16px;
+  }
 }
 
-.empty-accounts {
-  border: 2px dashed #e2e8f0;
-  border-radius: 12px;
-  text-align: center;
-  padding: 48px 24px;
-  color: #94a3b8;
-
-  mat-icon { font-size: 48px; width: 48px; height: 48px; display: block; margin: 0 auto 12px; opacity: 0.35; }
-  p { margin: 0 0 16px; font-size: 14px; font-weight: 500; }
+/* ─── Customer info grid (in header card) ─────────────────── */
+.customer-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
 }
 
+.customer-info-item {
+  .info-label {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+      color: #cbd5e1;
+    }
+  }
+
+  .info-value {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1e293b;
+    word-break: break-word;
+  }
+}
+
+/* ─── Back link ───────────────────────────────────────────── */
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -472,30 +395,310 @@ table.mat-mdc-table {
   cursor: pointer;
   border: none;
   background: none;
-  padding: 6px 8px;
+  padding: 6px 10px;
   border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+
   &:hover { background: #f1f5f9; color: #3b82f6; }
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
 }
 
-.dialog-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-width: 400px;
+/* ─── Accounts section ────────────────────────────────────── */
+.accounts-section {
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
 
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      h2 { margin: 0; font-size: 17px; font-weight: 700; color: #1e293b; }
+      mat-icon { color: #3b82f6; }
+
+      .count-badge {
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.empty-accounts {
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  text-align: center;
+  padding: 48px 24px;
+  color: #94a3b8;
+  margin-bottom: 16px;
+
+  mat-icon { font-size: 48px; width: 48px; height: 48px; display: block; margin: 0 auto 12px; opacity: 0.35; }
+  p { margin: 0 0 16px; font-size: 14px; font-weight: 500; }
+}
+
+/* ─── Account panel ───────────────────────────────────────── */
+.account-panel {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  margin-bottom: 16px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+  background: white;
+
+  &.inactive { opacity: 0.75; }
+
+  .account-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 4px 0;
+
+    .account-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      &.savings  { background: #eff6ff; mat-icon { color: #3b82f6; } }
+      &.checking { background: #f0fdf4; mat-icon { color: #16a34a; } }
+
+      mat-icon { font-size: 20px; width: 20px; height: 20px; }
+    }
+
+    .account-info {
+      flex: 1;
+      min-width: 0;
+
+      .account-number {
+        font-family: monospace;
+        font-weight: 700;
+        font-size: 14px;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .account-type { font-size: 12px; color: #64748b; margin-top: 2px; }
+    }
+
+    .account-balance {
+      text-align: right;
+      flex-shrink: 0;
+
+      .balance-label { font-size: 11px; color: #94a3b8; font-weight: 500; }
+      .balance-amount { font-size: 16px; font-weight: 700; color: #1e293b; }
+    }
+
+    .account-delete-btn {
+      flex-shrink: 0;
+      mat-icon { font-size: 18px; color: #ef4444; }
+    }
+  }
+
+  .account-panel-content {
+    border-top: 1px solid #f1f5f9;
+    padding: 20px 4px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .panel-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+
+    mat-icon { font-size: 15px; width: 15px; height: 15px; color: #94a3b8; }
+  }
+
+  .inactive-msg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 8px;
+    color: #c2410c;
+    font-size: 13px;
+    font-weight: 500;
+
+    mat-icon { font-size: 16px; width: 16px; height: 16px; color: #f97316; }
+  }
+}
+
+/* ─── Status chip ─────────────────────────────────────────── */
+.status-chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+
+  &.active   { background: #dcfce7; color: #15803d; }
+  &.inactive { background: #f1f5f9; color: #64748b; }
+}
+
+/* ─── Transaction form ────────────────────────────────────── */
+.transaction-form {
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0 16px;
+    gap: 12px;
   }
+
+  .full-width { width: 100%; }
+
+  .mat-mdc-form-field { width: 100%; }
+
+  .submit-btn { width: 100%; margin-top: 8px; }
+}
+
+/* ─── Transaction list ────────────────────────────────────── */
+.tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  .tx-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+    background: #f8fafc;
+    margin-bottom: 6px;
+
+    &:last-of-type { margin-bottom: 0; }
+
+    .tx-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .tx-icon-wrap {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+        &.deposit    { background: #dcfce7; mat-icon { color: #16a34a; } }
+        &.withdrawal { background: #fee2e2; mat-icon { color: #ef4444; } }
+      }
+
+      .tx-info {
+        .tx-type { font-size: 12px; font-weight: 600; color: #334155; }
+        .tx-desc {
+          font-size: 11px;
+          color: #94a3b8;
+          max-width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .tx-date { font-size: 11px; color: #94a3b8; }
+      }
+    }
+
+    .tx-right {
+      text-align: right;
+      flex-shrink: 0;
+
+      .tx-amount {
+        font-size: 13px;
+        font-weight: 700;
+        &.deposit    { color: #16a34a; }
+        &.withdrawal { color: #ef4444; }
+      }
+
+      .tx-balance { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+    }
+  }
+
+  .no-tx {
+    color: #94a3b8;
+    font-size: 12px;
+    padding: 8px 0;
+    text-align: center;
+  }
+
+  .tx-paginator {
+    border-top: 1px solid #f1f5f9;
+    margin-top: 8px;
+    font-size: 12px;
+
+    .mat-mdc-paginator-range-label,
+    .mat-mdc-paginator-page-size-label {
+      font-size: 12px;
+      color: #64748b;
+    }
+  }
+}
+
+/* ─── Dialog form ─────────────────────────────────────────── */
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 420px;
+  padding-top: 8px;
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 14px;
+  }
+
+  .full-width { width: 100%; }
 
   .mat-mdc-form-field { width: 100%; }
 }
 
 .mat-mdc-dialog-title { font-weight: 700 !important; color: #1e293b; }
 
-.primary-btn {
-  background-color: #3b82f6 !important;
-  color: white !important;
+/* ─── Material overrides ──────────────────────────────────── */
+.mdc-text-field--outlined .mdc-notched-outline__leading,
+.mdc-text-field--outlined .mdc-notched-outline__notch,
+.mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: #e2e8f0 !important;
+}
+
+/* Paginator global */
+.mat-mdc-paginator {
+  background: white;
+  border-top: 1px solid #f1f5f9;
+  border-radius: 0 0 12px 12px;
 }

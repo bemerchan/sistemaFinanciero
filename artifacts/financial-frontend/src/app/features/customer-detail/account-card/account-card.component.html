@@ -14,8 +14,8 @@
         <div class="account-type">Cuenta de {{ typeLabel }}</div>
       </div>
       <div class="account-balance">
-        <div class="label">Saldo</div>
-        <div class="amount" [style.color]="account.balance < 0 ? '#ef4444' : '#1e293b'">
+        <div class="balance-label">Saldo disponible</div>
+        <div class="balance-amount" [style.color]="account.balance < 0 ? '#ef4444' : '#1e293b'">
           {{ formatCurrency(account.balance) }}
         </div>
       </div>
@@ -27,17 +27,36 @@
   </mat-expansion-panel-header>
 
   <div class="account-panel-content">
-    <div class="section-label">Registrar transacción</div>
-    <app-transaction-form
-      [account]="account"
-      [customerId]="customerId"
-      (transactionRegistered)="onTransactionRegistered()">
-    </app-transaction-form>
 
-    <div class="section-label">Últimas 5 transacciones</div>
-    <app-transaction-list
-      [accountId]="account.id"
-      [refreshTrigger]="refreshTrigger">
-    </app-transaction-list>
+    @if (!isActive) {
+      <div class="inactive-msg">
+        <mat-icon>warning_amber</mat-icon>
+        Esta cuenta está inactiva. No se pueden registrar transacciones.
+      </div>
+    }
+
+    <div class="panel-section">
+      <div class="section-label">
+        <mat-icon>add_circle_outline</mat-icon>
+        Registrar transacción
+      </div>
+      <app-transaction-form
+        [account]="account"
+        [customerId]="customerId"
+        (transactionRegistered)="onTransactionRegistered()">
+      </app-transaction-form>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-label">
+        <mat-icon>history</mat-icon>
+        Historial de transacciones
+      </div>
+      <app-transaction-list
+        [accountId]="account.id"
+        [refreshTrigger]="refreshTrigger">
+      </app-transaction-list>
+    </div>
+
   </div>
 </mat-expansion-panel>

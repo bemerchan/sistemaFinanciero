@@ -3,48 +3,62 @@
 <mat-dialog-content>
   <form [formGroup]="form" class="dialog-form">
 
-    <div class="form-row">
-      <mat-form-field appearance="outline">
-        <mat-label>Nombre *</mat-label>
+    <div class="form-row-2">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Nombre</mat-label>
         <input matInput formControlName="firstName" placeholder="Juan">
-        <mat-error>{{ getError('firstName') }}</mat-error>
+        @if (getError('firstName')) {
+          <mat-error>{{ getError('firstName') }}</mat-error>
+        }
       </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Apellido *</mat-label>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Apellido</mat-label>
         <input matInput formControlName="lastName" placeholder="Pérez">
-        <mat-error>{{ getError('lastName') }}</mat-error>
+        @if (getError('lastName')) {
+          <mat-error>{{ getError('lastName') }}</mat-error>
+        }
       </mat-form-field>
     </div>
 
-    <div class="form-row">
-      <mat-form-field appearance="outline">
-        <mat-label>Tipo de identificación *</mat-label>
+    <div class="form-row-2">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Tipo de identificación</mat-label>
         <mat-select formControlName="identificationType">
           @for (t of idTypes; track t.value) {
             <mat-option [value]="t.value">{{ t.label }}</mat-option>
           }
         </mat-select>
-        <mat-error>{{ getError('identificationType') }}</mat-error>
+        @if (getError('identificationType')) {
+          <mat-error>{{ getError('identificationType') }}</mat-error>
+        }
       </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>No. de identificación *</mat-label>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>No. de identificación</mat-label>
         <input matInput formControlName="identificationNumber" placeholder="12345678">
-        <mat-error>{{ getError('identificationNumber') }}</mat-error>
+        @if (getError('identificationNumber')) {
+          <mat-error>{{ getError('identificationNumber') }}</mat-error>
+        }
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Correo electrónico *</mat-label>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+      <mat-label>Correo electrónico</mat-label>
+      <mat-icon matPrefix style="color:#94a3b8;margin-right:4px">email</mat-icon>
       <input matInput type="email" formControlName="email" placeholder="juan@ejemplo.com">
-      <mat-error>{{ getError('email') }}</mat-error>
+      @if (getError('email')) {
+        <mat-error>{{ getError('email') }}</mat-error>
+      }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Fecha de nacimiento *</mat-label>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+      <mat-label>Fecha de nacimiento</mat-label>
+      <mat-icon matPrefix style="color:#94a3b8;margin-right:4px">cake</mat-icon>
       <input matInput type="date" formControlName="birthDate">
-      <mat-error>{{ getError('birthDate') }}</mat-error>
+      @if (getError('birthDate')) {
+        <mat-error>{{ getError('birthDate') }}</mat-error>
+      }
     </mat-form-field>
 
   </form>

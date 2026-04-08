@@ -7,14 +7,14 @@
   } @else if (error) {
     <p style="color:#ef4444;font-size:12px">Error cargando transacciones.</p>
   } @else if (transactions.length === 0) {
-    <p class="no-tx">Sin movimientos registrados.</p>
+    <p class="no-tx">Sin movimientos registrados en esta página.</p>
   } @else {
     @for (tx of transactions; track tx.id) {
       <div class="tx-item">
         <div class="tx-left">
-          <mat-icon [class]="tx.transactionType === 'DEPOSIT' ? 'deposit' : 'withdrawal'">
-            {{ tx.transactionType === 'DEPOSIT' ? 'south_west' : 'north_east' }}
-          </mat-icon>
+          <div class="tx-icon-wrap" [class]="tx.transactionType === 'DEPOSIT' ? 'deposit' : 'withdrawal'">
+            <mat-icon>{{ tx.transactionType === 'DEPOSIT' ? 'south_west' : 'north_east' }}</mat-icon>
+          </div>
           <div class="tx-info">
             <div class="tx-type">{{ tx.transactionType === 'DEPOSIT' ? 'Consignación' : 'Retiro' }}</div>
             @if (tx.description) {
@@ -31,5 +31,17 @@
         </div>
       </div>
     }
+  }
+
+  @if (!loading && totalElements > 0) {
+    <mat-paginator
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+      [pageIndex]="currentPage"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="tx-paginator">
+    </mat-paginator>
   }
 </div>

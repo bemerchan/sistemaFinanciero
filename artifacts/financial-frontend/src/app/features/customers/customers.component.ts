@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CustomerService } from '../../core/services/customer.service';
@@ -23,11 +24,13 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     CommonModule, RouterLink,
     MatTableModule, MatInputModule, MatFormFieldModule,
     MatButtonModule, MatIconModule, MatTooltipModule,
-    MatProgressSpinnerModule, MatCardModule,
+    MatProgressSpinnerModule, MatCardModule, MatPaginatorModule,
   ],
   templateUrl: './customers.component.html',
 })
-export class CustomersComponent implements OnInit {
+export class CustomersComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   displayedColumns = ['id', 'name', 'identification', 'email', 'birthDate', 'age', 'actions'];
   dataSource = new MatTableDataSource<Customer>([]);
   loading = true;
@@ -43,6 +46,10 @@ export class CustomersComponent implements OnInit {
     this.loadCustomers();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
+
   loadCustomers(): void {
     this.loading = true;
     this.error = '';
@@ -50,6 +57,11 @@ export class CustomersComponent implements OnInit {
       next: (customers) => {
         this.dataSource.data = customers;
         this.loading = false;
+        setTimeout(() => {
+          if (this.paginator) {
+            this.dataSource.paginator = this.paginator;
+          }
+        });
       },
       error: (err: Error) => {
         this.error = err.message;
@@ -70,12 +82,15 @@ export class CustomersComponent implements OnInit {
       );
     };
     this.dataSource.filter = value.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   openCreate(): void {
     const ref = this.dialog.open(CustomerFormDialogComponent, {
       data: {},
-      width: '520px',
+      width: '540px',
     });
     ref.afterClosed().subscribe(result => {
       if (result) this.loadCustomers();
@@ -85,7 +100,7 @@ export class CustomersComponent implements OnInit {
   openEdit(customer: Customer): void {
     const ref = this.dialog.open(CustomerFormDialogComponent, {
       data: { customer },
-      width: '520px',
+      width: '540px',
     });
     ref.afterClosed().subscribe(result => {
       if (result) this.loadCustomers();
