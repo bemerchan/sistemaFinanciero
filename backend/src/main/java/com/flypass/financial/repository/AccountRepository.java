@@ -1,9 +1,10 @@
 package com.flypass.financial.repository;
 
 import com.flypass.financial.entity.Account;
-import org.springframework.data.repository.query.Param;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
@@ -17,6 +18,10 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findByCustomerId(@Param("customerId") Long customerId);
 
     @RestResource(exported = false)
-    boolean existsByAccountNumber(String accountNumber);
+    @Query(value = "SELECT nextval('savings_account_seq')", nativeQuery = true)
+    Long getNextSavingsSequenceValue();
 
+    @RestResource(exported = false)
+    @Query(value = "SELECT nextval('checking_account_seq')", nativeQuery = true)
+    Long getNextCheckingSequenceValue();
 }
