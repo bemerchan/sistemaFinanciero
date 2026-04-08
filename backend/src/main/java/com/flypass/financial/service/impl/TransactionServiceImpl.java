@@ -12,15 +12,11 @@ import com.flypass.financial.repository.TransactionRepository;
 import com.flypass.financial.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -67,31 +63,6 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction savedTransaction = transactionRepository.save(transaction);
         log.info("Transacción registrada con ID: {}, nuevo saldo: ${}", savedTransaction.getId(), newBalance);
         return mapToResponse(savedTransaction, account);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<TransactionResponse> getTransactionsByAccount(Long accountId) {
-        log.info("Listando transacciones de cuenta ID: {}", accountId);
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                        String.format("Cuenta con ID %d no encontrada", accountId)));
-        return transactionRepository.findByAccountIdOrderByCreatedAtDesc(accountId).stream()
-                .map(t -> mapToResponse(t, account))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<TransactionResponse> getLastTransactionsByAccount(Long accountId, int limit) {
-        log.info("Listando últimas {} transacciones de cuenta ID: {}", limit, accountId);
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                        String.format("Cuenta con ID %d no encontrada", accountId)));
-        Pageable pageable = PageRequest.of(0, limit);
-        return transactionRepository.findByAccountIdOrderByCreatedAtDesc(accountId, pageable).stream()
-                .map(t -> mapToResponse(t, account))
-                .collect(Collectors.toList());
     }
 
     private void validateWithdrawal(Account account, BigDecimal amount) {

@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -55,29 +53,6 @@ public class AccountServiceImpl implements AccountService {
         Account savedAccount = accountRepository.save(account);
         log.info("Cuenta creada exitosamente: {}", savedAccount.getAccountNumber());
         return mapToResponse(savedAccount);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<AccountResponse> getAccountsByCustomer(Long customerId) {
-        log.info("Listando cuentas para cliente ID: {}", customerId);
-        if (!customerRepository.existsById(customerId)) {
-            throw new ApiException(HttpStatus.NOT_FOUND,
-                    String.format("Cliente con ID %d no encontrado", customerId));
-        }
-        return accountRepository.findByCustomerId(customerId).stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public AccountResponse getAccountById(Long id) {
-        log.info("Buscando cuenta con ID: {}", id);
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                        String.format("Cuenta con ID %d no encontrada", id)));
-        return mapToResponse(account);
     }
 
     @Override

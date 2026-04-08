@@ -14,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -58,25 +56,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<CustomerResponse> getAllCustomers() {
-        log.info("Listando todos los clientes");
-        return customerRepository.findAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public CustomerResponse getCustomerById(Long id) {
-        log.info("Buscando cliente con ID: {}", id);
-        Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                        String.format("Cliente con ID %d no encontrado", id)));
-        return mapToResponse(customer);
-    }
-
-    @Override
     @Transactional
     public CustomerResponse updateCustomer(Long id, CustomerRequest request) {
         log.info("Actualizando cliente con ID: {}", id);
@@ -110,24 +89,6 @@ public class CustomerServiceImpl implements CustomerService {
         Customer updatedCustomer = customerRepository.save(customer);
         log.info("Cliente actualizado exitosamente con ID: {}", updatedCustomer.getId());
         return mapToResponse(updatedCustomer);
-    }
-
-    @Override
-    @Transactional
-    public void deleteCustomer(Long id) {
-        log.info("Eliminando cliente con ID: {}", id);
-
-        Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND,
-                        String.format("Cliente con ID %d no encontrado", id)));
-
-        if (customerRepository.hasAccounts(id)) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "No se puede eliminar el cliente porque tiene cuentas bancarias vinculadas");
-        }
-
-        customerRepository.delete(customer);
-        log.info("Cliente eliminado exitosamente con ID: {}", id);
     }
 
     private void validateAge(LocalDate birthDate) {
