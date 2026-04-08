@@ -1,0 +1,43 @@
+<mat-expansion-panel class="account-panel" [class.inactive]="!isActive">
+  <mat-expansion-panel-header>
+    <div class="account-panel-header">
+      <div class="account-icon" [class]="typeClass">
+        <mat-icon>{{ typeIcon }}</mat-icon>
+      </div>
+      <div class="account-info">
+        <div class="account-number">
+          {{ account.accountNumber }}
+          <span class="status-chip" [class]="isActive ? 'active' : 'inactive'">
+            {{ isActive ? 'Activa' : 'Inactiva' }}
+          </span>
+        </div>
+        <div class="account-type">Cuenta de {{ typeLabel }}</div>
+      </div>
+      <div class="account-balance">
+        <div class="label">Saldo</div>
+        <div class="amount" [style.color]="account.balance < 0 ? '#ef4444' : '#1e293b'">
+          {{ formatCurrency(account.balance) }}
+        </div>
+      </div>
+      <button mat-icon-button class="account-delete-btn"
+              (click)="confirmDelete($event)" matTooltip="Eliminar cuenta">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </mat-expansion-panel-header>
+
+  <div class="account-panel-content">
+    <div class="section-label">Registrar transacción</div>
+    <app-transaction-form
+      [account]="account"
+      [customerId]="customerId"
+      (transactionRegistered)="onTransactionRegistered()">
+    </app-transaction-form>
+
+    <div class="section-label">Últimas 5 transacciones</div>
+    <app-transaction-list
+      [accountId]="account.id"
+      [refreshTrigger]="refreshTrigger">
+    </app-transaction-list>
+  </div>
+</mat-expansion-panel>

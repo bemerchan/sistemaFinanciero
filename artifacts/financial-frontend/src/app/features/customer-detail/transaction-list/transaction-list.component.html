@@ -1,0 +1,35 @@
+<div class="tx-list">
+  @if (loading) {
+    <div class="loading-state">
+      <mat-spinner diameter="16"></mat-spinner>
+      <span>Cargando movimientos...</span>
+    </div>
+  } @else if (error) {
+    <p style="color:#ef4444;font-size:12px">Error cargando transacciones.</p>
+  } @else if (transactions.length === 0) {
+    <p class="no-tx">Sin movimientos registrados.</p>
+  } @else {
+    @for (tx of transactions; track tx.id) {
+      <div class="tx-item">
+        <div class="tx-left">
+          <mat-icon [class]="tx.transactionType === 'DEPOSIT' ? 'deposit' : 'withdrawal'">
+            {{ tx.transactionType === 'DEPOSIT' ? 'south_west' : 'north_east' }}
+          </mat-icon>
+          <div class="tx-info">
+            <div class="tx-type">{{ tx.transactionType === 'DEPOSIT' ? 'Consignación' : 'Retiro' }}</div>
+            @if (tx.description) {
+              <div class="tx-desc">{{ tx.description }}</div>
+            }
+            <div class="tx-date">{{ formatDate(tx.createdAt) }}</div>
+          </div>
+        </div>
+        <div class="tx-right">
+          <div class="tx-amount" [class]="tx.transactionType === 'DEPOSIT' ? 'deposit' : 'withdrawal'">
+            {{ tx.transactionType === 'DEPOSIT' ? '+' : '-' }}{{ formatCurrency(tx.amount) }}
+          </div>
+          <div class="tx-balance">Saldo: {{ formatCurrency(tx.balanceAfter) }}</div>
+        </div>
+      </div>
+    }
+  }
+</div>

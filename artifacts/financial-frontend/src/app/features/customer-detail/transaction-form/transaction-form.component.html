@@ -1,0 +1,42 @@
+<div class="transaction-form">
+  @if (!isActive) {
+    <p class="inactive-msg">
+      <mat-icon>warning</mat-icon>
+      Esta cuenta está inactiva. No se pueden registrar transacciones.
+    </p>
+  }
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="transactionType">
+          <mat-option value="DEPOSIT">Consignación</mat-option>
+          <mat-option value="WITHDRAWAL">Retiro</mat-option>
+        </mat-select>
+        <mat-error>{{ getError('transactionType') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Monto *</mat-label>
+        <input matInput type="number" step="0.01" min="0.01"
+               formControlName="amount" placeholder="0.00">
+        <mat-error>{{ getError('amount') }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción (opcional)</mat-label>
+      <input matInput formControlName="description"
+             placeholder="Ej: Pago de nómina">
+      <mat-error>{{ getError('description') }}</mat-error>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" type="submit"
+            class="submit-btn" [disabled]="loading || !isActive">
+      @if (loading) {
+        <mat-spinner diameter="16" style="display:inline-block;margin-right:8px"></mat-spinner>
+      }
+      {{ loading ? 'Procesando...' : 'Registrar transacción' }}
+    </button>
+  </form>
+</div>

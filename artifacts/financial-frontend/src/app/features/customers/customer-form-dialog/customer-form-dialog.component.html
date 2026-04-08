@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar Cliente' : 'Nuevo Cliente' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre *</mat-label>
+        <input matInput formControlName="firstName" placeholder="Juan">
+        <mat-error>{{ getError('firstName') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido *</mat-label>
+        <input matInput formControlName="lastName" placeholder="Pérez">
+        <mat-error>{{ getError('lastName') }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo de identificación *</mat-label>
+        <mat-select formControlName="identificationType">
+          @for (t of idTypes; track t.value) {
+            <mat-option [value]="t.value">{{ t.label }}</mat-option>
+          }
+        </mat-select>
+        <mat-error>{{ getError('identificationType') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>No. de identificación *</mat-label>
+        <input matInput formControlName="identificationNumber" placeholder="12345678">
+        <mat-error>{{ getError('identificationNumber') }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Correo electrónico *</mat-label>
+      <input matInput type="email" formControlName="email" placeholder="juan@ejemplo.com">
+      <mat-error>{{ getError('email') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de nacimiento *</mat-label>
+      <input matInput type="date" formControlName="birthDate">
+      <mat-error>{{ getError('birthDate') }}</mat-error>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="loading">
+    @if (loading) {
+      <mat-spinner diameter="16" style="display:inline-block;margin-right:8px"></mat-spinner>
+    }
+    {{ loading ? 'Guardando...' : (isEdit ? 'Actualizar' : 'Crear cliente') }}
+  </button>
+</mat-dialog-actions>

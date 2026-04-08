@@ -1,0 +1,103 @@
+<div class="page-container">
+
+  <!-- Back -->
+  <button class="back-link" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    Volver a clientes
+  </button>
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="loading-state">
+      <mat-spinner diameter="24"></mat-spinner>
+      <span>Cargando información del cliente...</span>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error) {
+    <div class="error-state">
+      <mat-icon>error_outline</mat-icon>
+      {{ error }}
+    </div>
+  }
+
+  @if (!loading && !error && customer) {
+    <!-- Customer Header Card -->
+    <mat-card class="customer-header-card">
+      <mat-card-content>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div class="customer-avatar">{{ initials }}</div>
+          <div class="customer-meta" style="flex:1">
+            <h1>{{ customer.firstName }} {{ customer.lastName }}</h1>
+            <p class="client-id">
+              {{ idTypeLabels[customer.identificationType] ?? customer.identificationType }}:
+              {{ customer.identificationNumber }}
+            </p>
+          </div>
+          <div class="total-balance">
+            <p class="label">Saldo total en cuentas</p>
+            <p class="amount">{{ formatCurrency(totalBalance) }}</p>
+          </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="info-grid" style="margin-top:20px;padding-top:16px;border-top:1px solid #f1f5f9;">
+          <div class="info-item">
+            <div class="label"><mat-icon>email</mat-icon> Correo</div>
+            <div class="value">{{ customer.email }}</div>
+          </div>
+          <div class="info-item">
+            <div class="label"><mat-icon>cake</mat-icon> Fecha de nacimiento</div>
+            <div class="value">{{ formatDate(customer.birthDate) }} · {{ calcAge(customer.birthDate) }} años</div>
+          </div>
+          <div class="info-item">
+            <div class="label"><mat-icon>account_balance</mat-icon> Cuentas</div>
+            <div class="value">{{ accounts.length }} total · {{ activeAccounts }} activa{{ activeAccounts !== 1 ? 's' : '' }}</div>
+          </div>
+          <div class="info-item">
+            <div class="label"><mat-icon>tag</mat-icon> ID Cliente</div>
+            <div class="value" style="font-family:monospace">#{{ customer.id }}</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Accounts Section -->
+    <div class="accounts-section">
+      <div class="section-header">
+        <div class="section-title">
+          <mat-icon>account_balance</mat-icon>
+          <h2>Cuentas</h2>
+          <span class="count-badge">{{ accounts.length }}</span>
+        </div>
+        <button mat-flat-button color="primary" (click)="openAddAccount()" [disabled]="newAccountLoading">
+          @if (newAccountLoading) {
+            <mat-spinner diameter="16" style="display:inline-block;margin-right:8px"></mat-spinner>
+          }
+          <mat-icon>add</mat-icon>
+          Nueva cuenta
+        </button>
+      </div>
+
+      @if (accounts.length === 0) {
+        <div class="empty-accounts">
+          <mat-icon>account_balance</mat-icon>
+          <p>Este cliente no tiene cuentas registradas</p>
+          <button mat-stroked-button color="primary" (click)="openAddAccount()">
+            <mat-icon>add</mat-icon> Crear primera cuenta
+          </button>
+        </div>
+      }
+
+      @for (account of accounts; track account.id) {
+        <app-account-card
+          [account]="account"
+          [customerId]="customerId"
+          (accountDeleted)="reloadAccounts()"
+          (balanceUpdated)="reloadCustomerAndAccounts()">
+        </app-account-card>
+      }
+    </div>
+  }
+</div>
