@@ -16,9 +16,13 @@ El proyecto está organizado como un monorepo con backend Java/Spring Boot y fro
 - **Utilities**: Lombok
 - **Build**: Maven 3.8.6
 
-### Frontend (Angular — próximamente)
-- **Framework**: Angular (última LTS)
-- **CSS**: Angular Material + Tailwind CSS
+### Frontend (React + Vite)
+- **Framework**: React 18 + Vite
+- **UI**: shadcn/ui (Radix UI) + Tailwind CSS
+- **State/data**: React Query (@tanstack/react-query)
+- **Forms**: react-hook-form + zod
+- **Routing**: wouter
+- **Preview path**: `/` (port assigned via PORT env var)
 
 ### Monorepo tooling (Node.js)
 - **Monorepo tool**: pnpm workspaces
