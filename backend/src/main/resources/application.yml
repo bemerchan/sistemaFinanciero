@@ -1,4 +1,10 @@
 spring:
+  data:
+    rest:
+      base-path: /api/v1
+      default-page-size: 20
+      return-body-on-create: true
+      return-body-on-update: true
   datasource:
     url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:financial_db}
     username: ${PGUSER:postgres}

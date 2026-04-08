@@ -3,21 +3,28 @@ package com.flypass.financial.repository;
 import com.flypass.financial.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.Optional;
 
-@Repository
+@RepositoryRestResource(path = "customers", collectionResourceRel = "customers", itemResourceRel = "customer")
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
+    @RestResource(exported = false)
     boolean existsByEmail(String email);
 
+    @RestResource(exported = false)
     boolean existsByIdentificationNumber(String identificationNumber);
 
+    @RestResource(exported = false)
     Optional<Customer> findByEmail(String email);
 
+    @RestResource(exported = false)
     Optional<Customer> findByIdentificationNumber(String identificationNumber);
 
+    @RestResource(exported = false)
     @Query("SELECT COUNT(a) > 0 FROM Account a WHERE a.customer.id = :customerId")
-    boolean hasAccounts(Long customerId);
+    boolean hasAccounts(@Param("customerId") Long customerId);
 }
