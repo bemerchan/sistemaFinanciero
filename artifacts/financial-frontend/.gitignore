@@ -1,0 +1,20 @@
+# Angular build cache
+.angular/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-server/
+
+# Environment local overrides
+src/environments/environment.local.ts
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

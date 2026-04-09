@@ -8,6 +8,10 @@ out-tsc
 .expo
 .expo-shared
 
+# Angular build cache
+.angular/
+*/.angular/
+
 # dependencies
 node_modules
 
