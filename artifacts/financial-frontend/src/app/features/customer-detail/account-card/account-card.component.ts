@@ -3,20 +3,21 @@ import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Account } from '../../../core/models/account.model';
 import { AccountService } from '../../../core/services/account.service';
-import { TransactionFormComponent } from '../transaction-form/transaction-form.component';
 import { TransactionListComponent } from '../transaction-list/transaction-list.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { TransactionDialogComponent } from '../transaction-dialog/transaction-dialog.component';
 
 @Component({
   selector: 'app-account-card',
   standalone: true,
   imports: [
-    CommonModule, MatExpansionModule, MatIconModule, MatButtonModule,
-    TransactionFormComponent, TransactionListComponent,
+    CommonModule, MatExpansionModule, MatIconModule,
+    MatButtonModule, MatTooltipModule, TransactionListComponent,
   ],
   templateUrl: './account-card.component.html',
 })
@@ -56,9 +57,18 @@ export class AccountCardComponent {
     }).format(value);
   }
 
-  onTransactionRegistered(): void {
-    this.refreshTrigger++;
-    this.balanceUpdated.emit();
+  openTransactionDialog(event: MouseEvent): void {
+    event.stopPropagation();
+    const ref = this.dialog.open(TransactionDialogComponent, {
+      data: { account: this.account },
+      width: '480px',
+    });
+    ref.afterClosed().subscribe(success => {
+      if (success) {
+        this.refreshTrigger++;
+        this.balanceUpdated.emit();
+      }
+    });
   }
 
   confirmDelete(event: MouseEvent): void {

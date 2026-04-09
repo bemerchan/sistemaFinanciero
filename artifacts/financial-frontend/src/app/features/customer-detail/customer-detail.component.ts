@@ -13,7 +13,7 @@ import { AccountService } from '../../core/services/account.service';
 import { Customer } from '../../core/models/customer.model';
 import { Account, AccountType } from '../../core/models/account.model';
 import { AccountCardComponent } from './account-card/account-card.component';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { AccountFormDialogComponent } from './account-form-dialog/account-form-dialog.component';
 
 @Component({
   selector: 'app-customer-detail',
@@ -85,20 +85,11 @@ export class CustomerDetailComponent implements OnInit {
   }
 
   openAddAccount(): void {
-    const ref = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Crear nueva cuenta',
-        message: `¿Qué tipo de cuenta desea crear?<br><br>
-          <strong>Ahorro (53XXXXXXXX)</strong> — saldo mínimo $0<br>
-          <strong>Corriente (33XXXXXXXX)</strong> — puede tener sobregiro`,
-        confirmLabel: 'Ahorro',
-        cancelLabel: 'Corriente',
-      },
-      width: '400px',
+    const ref = this.dialog.open(AccountFormDialogComponent, {
+      width: '440px',
     });
-    ref.afterClosed().subscribe((result) => {
-      if (result === undefined) return;
-      const accountType: AccountType = result === true ? 'SAVINGS' : 'CHECKING';
+    ref.afterClosed().subscribe((accountType: AccountType | null) => {
+      if (!accountType) return;
       this.newAccountLoading = true;
       this.accountService.create({ accountType, customerId: this.customerId }).subscribe({
         next: (res) => {

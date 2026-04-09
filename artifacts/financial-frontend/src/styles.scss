@@ -504,9 +504,13 @@ table.mat-mdc-table {
       .balance-amount { font-size: 16px; font-weight: 700; color: #1e293b; }
     }
 
-    .account-delete-btn {
+    .account-action-btn {
       flex-shrink: 0;
-      mat-icon { font-size: 18px; color: #ef4444; }
+      width: 34px;
+      height: 34px;
+      mat-icon { font-size: 18px; }
+      &.tx-btn     mat-icon { color: #3b82f6; }
+      &.delete-btn mat-icon { color: #ef4444; }
     }
   }
 

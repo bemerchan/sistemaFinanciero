@@ -19,34 +19,26 @@
           {{ formatCurrency(account.balance) }}
         </div>
       </div>
-      <button mat-icon-button class="account-delete-btn"
-              (click)="confirmDelete($event)" matTooltip="Eliminar cuenta">
+
+      <!-- Botón: Nueva transacción -->
+      <button mat-icon-button class="account-action-btn tx-btn"
+              (click)="openTransactionDialog($event)"
+              [disabled]="!isActive"
+              [matTooltip]="isActive ? 'Nueva transacción' : 'Cuenta inactiva'">
+        <mat-icon>add_circle_outline</mat-icon>
+      </button>
+
+      <!-- Botón: Eliminar -->
+      <button mat-icon-button class="account-action-btn delete-btn"
+              (click)="confirmDelete($event)"
+              matTooltip="Eliminar cuenta">
         <mat-icon>delete</mat-icon>
       </button>
     </div>
   </mat-expansion-panel-header>
 
+  <!-- Panel expandido: Últimas 5 transacciones -->
   <div class="account-panel-content">
-
-    @if (!isActive) {
-      <div class="inactive-msg">
-        <mat-icon>warning_amber</mat-icon>
-        Esta cuenta está inactiva. No se pueden registrar transacciones.
-      </div>
-    }
-
-    <div class="panel-section">
-      <div class="section-label">
-        <mat-icon>add_circle_outline</mat-icon>
-        Registrar transacción
-      </div>
-      <app-transaction-form
-        [account]="account"
-        [customerId]="customerId"
-        (transactionRegistered)="onTransactionRegistered()">
-      </app-transaction-form>
-    </div>
-
     <div class="panel-section">
       <div class="section-label">
         <mat-icon>history</mat-icon>
@@ -57,6 +49,5 @@
         [refreshTrigger]="refreshTrigger">
       </app-transaction-list>
     </div>
-
   </div>
 </mat-expansion-panel>
