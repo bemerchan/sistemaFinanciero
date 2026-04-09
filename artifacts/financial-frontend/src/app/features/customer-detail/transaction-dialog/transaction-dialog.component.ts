@@ -51,6 +51,15 @@ export interface TransactionDialogData {
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Tipo de transacción *</mat-label>
           <mat-select formControlName="transactionType">
+            <mat-select-trigger>
+              <div style="display:flex;align-items:center;gap:8px">
+                <mat-icon [style.color]="form.get('transactionType')?.value === 'DEPOSIT' ? '#16a34a' : '#ef4444'"
+                          style="font-size:18px;width:18px;height:18px;line-height:18px">
+                  {{ form.get('transactionType')?.value === 'DEPOSIT' ? 'south_west' : 'north_east' }}
+                </mat-icon>
+                {{ form.get('transactionType')?.value === 'DEPOSIT' ? 'Consignación' : 'Retiro' }}
+              </div>
+            </mat-select-trigger>
             <mat-option value="DEPOSIT">
               <div style="display:flex;align-items:center;gap:8px">
                 <mat-icon style="color:#16a34a;font-size:18px;width:18px;height:18px">south_west</mat-icon>
