@@ -4,10 +4,11 @@ import { Observable, catchError, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { Account, AccountRequest, HalAccounts } from '../models/account.model';
 import { ApiResponse } from '../models/customer.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  private readonly base = '/api/v1/accounts';
+  private readonly base = `${environment.apiUrl}/api/v1/accounts`;
 
   constructor(private http: HttpClient, private api: ApiService) {}
 

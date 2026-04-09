@@ -1,0 +1,59 @@
+databases:
+  - name: financial-db
+    plan: free
+    databaseName: financial_db
+    user: financial_user
+
+services:
+  # ── Backend: Spring Boot API ────────────────────────────────────────────────
+  - type: web
+    name: financial-api
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /api-docs
+    envVars:
+      - key: PGHOST
+        fromDatabase:
+          name: financial-db
+          property: host
+      - key: PGPORT
+        fromDatabase:
+          name: financial-db
+          property: port
+      - key: PGDATABASE
+        fromDatabase:
+          name: financial-db
+          property: database
+      - key: PGUSER
+        fromDatabase:
+          name: financial-db
+          property: user
+      - key: PGPASSWORD
+        fromDatabase:
+          name: financial-db
+          property: password
+      - key: SERVER_PORT
+        value: "9000"
+
+  # ── Frontend: Angular SPA ───────────────────────────────────────────────────
+  - type: web
+    name: financial-frontend
+    env: static
+    rootDir: artifacts/financial-frontend
+    buildCommand: >
+      pnpm install --frozen-lockfile &&
+      sed -i "s|https://RENDER_BACKEND_URL|${API_URL}|g" src/environments/environment.prod.ts &&
+      NG_CLI_ANALYTICS=false npx ng build --configuration production
+    staticPublishPath: dist/public
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    envVars:
+      - key: API_URL
+        sync: false

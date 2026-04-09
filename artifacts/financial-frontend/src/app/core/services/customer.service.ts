@@ -5,10 +5,11 @@ import { ApiService } from './api.service';
 import {
   Customer, CustomerRequest, ApiResponse, HalCustomers
 } from '../models/customer.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CustomerService {
-  private readonly base = '/api/v1/customers';
+  private readonly base = `${environment.apiUrl}/api/v1/customers`;
 
   constructor(private http: HttpClient, private api: ApiService) {}
 

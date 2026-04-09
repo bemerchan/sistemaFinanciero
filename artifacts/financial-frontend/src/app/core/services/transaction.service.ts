@@ -4,10 +4,11 @@ import { Observable, catchError } from 'rxjs';
 import { ApiService } from './api.service';
 import { Transaction, TransactionRequest, HalTransactions } from '../models/transaction.model';
 import { ApiResponse } from '../models/customer.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
-  private readonly base = '/api/v1/transactions';
+  private readonly base = `${environment.apiUrl}/api/v1/transactions`;
 
   constructor(private http: HttpClient, private api: ApiService) {}
 
