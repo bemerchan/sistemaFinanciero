@@ -51,7 +51,7 @@ services:
     env: static
     rootDir: artifacts/financial-frontend
     buildCommand: >
-      pnpm install --frozen-lockfile &&
+      pnpm install --no-frozen-lockfile &&
       sed -i "s|https://RENDER_BACKEND_URL|${API_URL}|g" src/environments/environment.prod.ts &&
       NG_CLI_ANALYTICS=false npx ng build --configuration production
     staticPublishPath: dist/public
