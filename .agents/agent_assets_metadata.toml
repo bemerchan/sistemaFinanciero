@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "0tgjJMB15DVNioxQ8YfHw"
+uri = "file://docs/diagrams.md"
+type = "text"
+title = "Diagramas del Sistema Financiero"
