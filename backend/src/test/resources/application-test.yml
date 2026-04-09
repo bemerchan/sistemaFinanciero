@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;NON_KEYWORDS=VALUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ''
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-h2.sql
+  data:
+    rest:
+      base-path: /api/v1
+      default-page-size: 20
+      return-body-on-create: true
+      return-body-on-update: true
+  jackson:
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: 0
+
+logging:
+  level:
+    com.flypass: WARN
+    org.springframework: WARN
+    org.hibernate: WARN
