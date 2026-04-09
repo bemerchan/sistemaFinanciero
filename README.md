@@ -1,20 +1,22 @@
 # Mini Sistema Financiero - Flypass
 
-Aplicación web para gestión de clientes y cuentas bancarias desarrollada como prueba técnica para Flypass.
+Aplicación web full-stack para gestión de clientes y cuentas bancarias, desarrollada como prueba técnica para Flypass.
 
 ## Stack Tecnológico
 
-### Backend
+### Backend — `backend/`
 - **Java 17** + **Spring Boot 3.2.5**
-- **Spring Data JPA** + Hibernate
+- **Spring Data JPA** + Hibernate (ORM)
 - **PostgreSQL** como base de datos
-- **SpringDoc OpenAPI 2.x** para documentación Swagger
-- **Lombok** para reducción de boilerplate
+- **SpringDoc OpenAPI 2.x** — documentación Swagger
+- **Lombok** para reducir código repetitivo
 - **Maven** como gestor de dependencias
 
-### Frontend (próximamente)
-- **Angular** (última versión LTS)
-- **Angular Material** + **Tailwind CSS**
+### Frontend — `artifacts/financial-frontend/`
+- **Angular 18** (standalone components, lazy-loaded routes)
+- **Angular Material 18** (tema azure-blue, M3)
+- **ReactiveFormsModule** (FormGroup, FormBuilder, Validators)
+- Proxy `/api/v1` → backend en puerto 9000
 
 ## Arquitectura del Backend
 

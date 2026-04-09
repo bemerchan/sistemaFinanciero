@@ -24,7 +24,7 @@ El proyecto está organizado como un monorepo pnpm con backend Java/Spring Boot 
 - **HTTP**: Angular HttpClient con proxy hacia backend (puerto 9000)
 - **Forms**: ReactiveFormsModule (FormGroup, FormBuilder, Validators)
 - **Routing**: Angular Router con carga lazy de features
-- **Build tool**: Angular CLI (esbuild builder)
+- **Build tool**: Angular CLI (webpack via `@angular-devkit/build-angular:browser`)
 - **Preview path**: `/` (port 24069)
 
 ### Monorepo tooling (Node.js)
@@ -40,34 +40,43 @@ El proyecto está organizado como un monorepo pnpm con backend Java/Spring Boot 
 │   ├── pom.xml
 │   └── src/main/java/com/flypass/financial/
 │       ├── config/                   # CORS, JPA, Swagger config
-│       ├── controller/               # REST controllers custom
+│       ├── controller/               # REST controllers
 │       ├── dto/                      # Request/Response DTOs
 │       ├── entity/                   # JPA entities
 │       ├── exception/                # ApiException + GlobalExceptionHandler
-│       ├── repository/               # Spring Data JPA + SDR repos
-│       └── service/impl/
+│       ├── repository/               # Spring Data JPA repositories
+│       └── service/impl/             # Implementaciones de negocio
 │
-└── artifacts/
-    └── financial-frontend/           # Angular 18 app (puerto 24069)
-        ├── angular.json
-        ├── package.json
-        ├── proxy.conf.json           # Proxy /api/v1 → localhost:9000
-        └── src/
-            └── app/
-                ├── core/
-                │   ├── models/       # Customer, Account, Transaction models
-                │   └── services/     # CustomerService, AccountService, TransactionService
-                ├── shared/
-                │   └── components/
-                │       ├── navbar/           # Barra de navegación
-                │       └── confirm-dialog/   # Diálogo de confirmación reutilizable
-                └── features/
-                    ├── customers/            # Lista de clientes + formulario CRUD
-                    │   └── customer-form-dialog/
-                    └── customer-detail/      # Detalle cliente + cuentas
-                        ├── account-card/     # Tarjeta expansible por cuenta
-                        ├── transaction-form/ # Formulario de transacción
-                        └── transaction-list/ # Últimas 5 transacciones
+├── artifacts/
+│   ├── api-server/                   # Registro de artefacto backend para Replit
+│   │   └── .replit-artifact
+│   └── financial-frontend/           # Angular 18 app (puerto $PORT)
+│       ├── angular.json              # Config webpack browser builder
+│       ├── proxy.conf.json           # Proxy /api/v1 → localhost:9000
+│       └── src/app/
+│           ├── core/
+│           │   ├── models/           # Customer, Account, Transaction interfaces
+│           │   └── services/         # CustomerService, AccountService, TransactionService
+│           ├── shared/components/
+│           │   ├── navbar/           # Barra de navegación
+│           │   └── confirm-dialog/   # Diálogo de confirmación reutilizable
+│           └── features/
+│               ├── customers/        # Lista de clientes (tabla + paginación)
+│               │   └── customer-form-dialog/  # Dialog crear/editar cliente
+│               └── customer-detail/  # Detalle cliente + cuentas
+│                   ├── account-card/            # Tarjeta expansible por cuenta
+│                   ├── account-form-dialog/     # Dialog crear cuenta (selector tipo)
+│                   ├── transaction-dialog/      # Dialog nueva transacción (modal)
+│                   ├── transaction-form/        # Componente form transacción (legado)
+│                   └── transaction-list/        # Últimas 5 transacciones
+│
+├── scripts/
+│   └── post-merge.sh                 # Script post-merge para Replit
+│
+├── pnpm-workspace.yaml               # Workspace: solo financial-frontend
+├── package.json                      # Raíz del monorepo
+├── tsconfig.base.json                # Config TypeScript base
+└── replit.md                         # Este archivo
 ```
 
 ## API Endpoints
