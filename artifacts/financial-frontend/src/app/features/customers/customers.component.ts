@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -9,7 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CustomerService } from '../../core/services/customer.service';
@@ -24,17 +23,11 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     CommonModule, RouterLink,
     MatTableModule, MatInputModule, MatFormFieldModule,
     MatButtonModule, MatIconModule, MatTooltipModule,
-    MatProgressSpinnerModule, MatCardModule, MatPaginatorModule,
+    MatProgressSpinnerModule, MatCardModule,
   ],
   templateUrl: './customers.component.html',
 })
 export class CustomersComponent implements OnInit {
-  @ViewChild(MatPaginator) set paginator(p: MatPaginator) {
-    if (p) {
-      this.dataSource.paginator = p;
-    }
-  }
-
   displayedColumns = ['id', 'name', 'identification', 'email', 'birthDate', 'age', 'actions'];
   dataSource = new MatTableDataSource<Customer>([]);
   loading = true;
