@@ -1,37 +1,27 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
 import { TransactionService } from '../../../core/services/transaction.service';
 import { Transaction } from '../../../core/models/transaction.model';
 
 @Component({
   selector: 'app-transaction-list',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule, MatPaginatorModule],
+  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './transaction-list.component.html',
 })
 export class TransactionListComponent implements OnChanges {
   @Input() accountId!: number;
   @Input() refreshTrigger = 0;
 
-  @ViewChild(MatPaginator) paginator?: MatPaginator;
-
   transactions: Transaction[] = [];
   loading = false;
   error = '';
-  currentPage = 0;
-  pageSize = 10;
-  totalElements = 0;
 
   constructor(private transactionService: TransactionService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['accountId']) {
-      this.currentPage = 0;
-      this.paginator?.firstPage();
-    }
     if (changes['accountId'] || changes['refreshTrigger']) {
       this.load();
     }
@@ -40,10 +30,9 @@ export class TransactionListComponent implements OnChanges {
   load(): void {
     this.loading = true;
     this.error = '';
-    this.transactionService.getByAccount(this.accountId, this.currentPage, this.pageSize).subscribe({
+    this.transactionService.getByAccount(this.accountId, 0, 5).subscribe({
       next: (res) => {
         this.transactions = res._embedded?.transactions ?? [];
-        this.totalElements = res.page?.totalElements ?? 0;
         this.loading = false;
       },
       error: (err: Error) => {
@@ -51,12 +40,6 @@ export class TransactionListComponent implements OnChanges {
         this.loading = false;
       },
     });
-  }
-
-  onPageChange(event: PageEvent): void {
-    this.currentPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.load();
   }
 
   formatCurrency(value: number): string {

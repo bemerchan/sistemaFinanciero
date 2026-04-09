@@ -22,14 +22,6 @@
 
   <!-- Card con tabla -->
   <mat-card>
-    <!-- Buscador -->
-    <mat-card-content class="search-bar-wrap">
-      <mat-form-field appearance="outline" class="search-field" subscriptSizing="fixed">
-        <mat-label>Buscar por nombre, identificación o correo</mat-label>
-        <mat-icon matPrefix style="margin-right:4px;color:#94a3b8">search</mat-icon>
-        <input matInput (input)="applyFilter($event)" placeholder="Buscar...">
-      </mat-form-field>
-    </mat-card-content>
 
     <!-- Loading -->
     @if (loading) {
@@ -128,12 +120,10 @@
             <td class="mat-cell" [attr.colspan]="displayedColumns.length">
               <div class="empty-state">
                 <mat-icon>people_outline</mat-icon>
-                <p>{{ dataSource.filter ? 'Sin resultados para la búsqueda' : 'No hay clientes registrados' }}</p>
-                @if (!dataSource.filter) {
-                  <button mat-stroked-button color="primary" (click)="openCreate()">
-                    <mat-icon>add</mat-icon> Crear primer cliente
-                  </button>
-                }
+                <p>No hay clientes registrados</p>
+                <button mat-stroked-button color="primary" (click)="openCreate()">
+                  <mat-icon>add</mat-icon> Crear primer cliente
+                </button>
               </div>
             </td>
           </tr>

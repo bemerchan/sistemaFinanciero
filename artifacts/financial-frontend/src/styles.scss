@@ -669,17 +669,21 @@ table.mat-mdc-table {
 }
 
 /* ─── Dialog form ─────────────────────────────────────────── */
+.dialog-content-padded {
+  padding-top: 16px !important;
+  overflow: visible !important;
+}
+
 .dialog-form {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 420px;
-  padding-top: 8px;
+  gap: 0;
+  min-width: 440px;
 
   .form-row-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0 14px;
+    column-gap: 16px;
   }
 
   .full-width { width: 100%; }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -28,8 +28,12 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   ],
   templateUrl: './customers.component.html',
 })
-export class CustomersComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+export class CustomersComponent implements OnInit {
+  @ViewChild(MatPaginator) set paginator(p: MatPaginator) {
+    if (p) {
+      this.dataSource.paginator = p;
+    }
+  }
 
   displayedColumns = ['id', 'name', 'identification', 'email', 'birthDate', 'age', 'actions'];
   dataSource = new MatTableDataSource<Customer>([]);
@@ -46,10 +50,6 @@ export class CustomersComponent implements OnInit, AfterViewInit {
     this.loadCustomers();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-  }
-
   loadCustomers(): void {
     this.loading = true;
     this.error = '';
@@ -57,34 +57,12 @@ export class CustomersComponent implements OnInit, AfterViewInit {
       next: (customers) => {
         this.dataSource.data = customers;
         this.loading = false;
-        setTimeout(() => {
-          if (this.paginator) {
-            this.dataSource.paginator = this.paginator;
-          }
-        });
       },
       error: (err: Error) => {
         this.error = err.message;
         this.loading = false;
       },
     });
-  }
-
-  applyFilter(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.dataSource.filterPredicate = (data: Customer, filter: string) => {
-      const q = filter.toLowerCase();
-      return (
-        data.firstName.toLowerCase().includes(q) ||
-        data.lastName.toLowerCase().includes(q) ||
-        data.email.toLowerCase().includes(q) ||
-        data.identificationNumber.toLowerCase().includes(q)
-      );
-    };
-    this.dataSource.filter = value.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
   }
 
   openCreate(): void {

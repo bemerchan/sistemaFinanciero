@@ -7,7 +7,7 @@
   } @else if (error) {
     <p style="color:#ef4444;font-size:12px">Error cargando transacciones.</p>
   } @else if (transactions.length === 0) {
-    <p class="no-tx">Sin movimientos registrados en esta página.</p>
+    <p class="no-tx">Sin movimientos registrados.</p>
   } @else {
     @for (tx of transactions; track tx.id) {
       <div class="tx-item">
@@ -31,17 +31,5 @@
         </div>
       </div>
     }
-  }
-
-  @if (!loading && totalElements > 0) {
-    <mat-paginator
-      [length]="totalElements"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="[5, 10, 20]"
-      [pageIndex]="currentPage"
-      (page)="onPageChange($event)"
-      showFirstLastButtons
-      class="tx-paginator">
-    </mat-paginator>
   }
 </div>
