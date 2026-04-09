@@ -6,3 +6,9 @@ id = "0tgjJMB15DVNioxQ8YfHw"
 uri = "file://docs/diagrams.md"
 type = "text"
 title = "Diagramas actualizados"
+
+[[outputs]]
+id = "tcUfaRlyyCvc-fHJYRfbY"
+uri = "file://docs/flypass-financial.postman_collection.json"
+type = "unspecified"
+title = "Colección Postman — Mini Sistema Financiero Flypass"

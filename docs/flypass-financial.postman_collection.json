@@ -1,0 +1,494 @@
+{
+  "info": {
+    "name": "Mini Sistema Financiero — Flypass",
+    "description": "Colección completa para consumir la API REST del sistema financiero Flypass.\n\n**Base URL local:** `http://localhost:9000/api/v1`\n**Base URL producción:** configurar la variable `baseUrl` con la URL de Render.\n\nLa API combina controladores propios (`@RepositoryRestController`) con endpoints autogenerados por Spring Data REST.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "flypass-financial-system-v1"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:9000/api/v1",
+      "description": "URL base de la API. Cambiar por la URL de Render en producción."
+    },
+    {
+      "key": "customerId",
+      "value": "1",
+      "description": "ID de cliente para usar en las peticiones"
+    },
+    {
+      "key": "accountId",
+      "value": "1",
+      "description": "ID de cuenta para usar en las peticiones"
+    },
+    {
+      "key": "transactionId",
+      "value": "1",
+      "description": "ID de transacción para usar en las peticiones"
+    }
+  ],
+  "item": [
+    {
+      "name": "👤 Clientes",
+      "description": "Gestión de clientes. POST y PUT son manejados por el controlador personalizado con validaciones de negocio. GET y DELETE son provistos por Spring Data REST.",
+      "item": [
+        {
+          "name": "Listar todos los clientes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers?page=0&size=20&sort=id,desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"],
+              "query": [
+                { "key": "page", "value": "0", "description": "Página (0-indexed)" },
+                { "key": "size", "value": "20", "description": "Elementos por página" },
+                { "key": "sort", "value": "id,desc", "description": "Campo y dirección de ordenamiento" }
+              ]
+            },
+            "description": "Retorna la lista paginada de clientes. Spring Data REST — respuesta en formato HAL+JSON con `_embedded` y `_links`."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/hal+json" }],
+              "body": "{\n  \"_embedded\": {\n    \"customers\": [\n      {\n        \"id\": 1,\n        \"firstName\": \"Carlos\",\n        \"lastName\": \"Pérez\",\n        \"identificationType\": \"CC\",\n        \"identificationNumber\": \"1234567890\",\n        \"email\": \"carlos.perez@example.com\",\n        \"birthDate\": \"1990-05-15\",\n        \"createdAt\": \"2024-01-15T10:30:00\",\n        \"updatedAt\": \"2024-01-15T10:30:00\"\n      }\n    ]\n  },\n  \"_links\": {\n    \"self\": { \"href\": \"http://localhost:9000/api/v1/customers?page=0&size=20\" }\n  },\n  \"page\": { \"size\": 20, \"totalElements\": 1, \"totalPages\": 1, \"number\": 0 }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Obtener cliente por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", "{{customerId}}"]
+            },
+            "description": "Retorna un cliente por su ID. Spring Data REST."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/hal+json" }],
+              "body": "{\n  \"id\": 1,\n  \"firstName\": \"Carlos\",\n  \"lastName\": \"Pérez\",\n  \"identificationType\": \"CC\",\n  \"identificationNumber\": \"1234567890\",\n  \"email\": \"carlos.perez@example.com\",\n  \"birthDate\": \"1990-05-15\",\n  \"createdAt\": \"2024-01-15T10:30:00\",\n  \"updatedAt\": \"2024-01-15T10:30:00\",\n  \"_links\": {\n    \"self\": { \"href\": \"http://localhost:9000/api/v1/customers/1\" }\n  }\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Cliente no encontrado con ID: 999\",\n  \"timestamp\": \"2024-01-15T10:30:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Crear cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Carlos\",\n  \"lastName\": \"Pérez Gómez\",\n  \"identificationType\": \"CC\",\n  \"identificationNumber\": \"1234567890\",\n  \"email\": \"carlos.perez@example.com\",\n  \"birthDate\": \"1990-05-15\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"]
+            },
+            "description": "Crea un nuevo cliente con validaciones de negocio:\n- Edad mínima 18 años\n- Email único en el sistema\n- Número de identificación único\n\n**Tipos de identificación válidos:** `CC`, `CE`, `TI`, `PASSPORT`, `NIT`"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": 201,\n  \"message\": \"Cliente creado exitosamente\",\n  \"data\": {\n    \"id\": 1,\n    \"firstName\": \"Carlos\",\n    \"lastName\": \"Pérez Gómez\",\n    \"identificationType\": \"CC\",\n    \"identificationNumber\": \"1234567890\",\n    \"email\": \"carlos.perez@example.com\",\n    \"birthDate\": \"1990-05-15\",\n    \"createdAt\": \"2024-01-15T10:30:00\"\n  }\n}"
+            },
+            {
+              "name": "400 Campos inválidos",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"message\": \"Errores de validación\",\n  \"timestamp\": \"2024-01-15T10:30:00\",\n  \"errors\": [\n    { \"field\": \"email\", \"message\": \"El formato del correo electrónico no es válido\" },\n    { \"field\": \"birthDate\", \"message\": \"La fecha de nacimiento es obligatoria\" }\n  ]\n}"
+            },
+            {
+              "name": "409 Email duplicado",
+              "status": "Conflict",
+              "code": 409,
+              "body": "{\n  \"status\": 409,\n  \"error\": \"Conflict\",\n  \"message\": \"Ya existe un cliente con ese correo electrónico\",\n  \"timestamp\": \"2024-01-15T10:30:00\"\n}"
+            },
+            {
+              "name": "422 Menor de edad",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "body": "{\n  \"status\": 422,\n  \"error\": \"Unprocessable Entity\",\n  \"message\": \"No se permite registrar clientes menores de 18 años\",\n  \"timestamp\": \"2024-01-15T10:30:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Actualizar cliente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Carlos Alberto\",\n  \"lastName\": \"Pérez Gómez\",\n  \"identificationType\": \"CC\",\n  \"identificationNumber\": \"1234567890\",\n  \"email\": \"carlos.alberto@example.com\",\n  \"birthDate\": \"1990-05-15\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", "{{customerId}}"]
+            },
+            "description": "Actualiza todos los datos de un cliente existente. Aplica las mismas validaciones que el registro."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": 200,\n  \"message\": \"Cliente actualizado exitosamente\",\n  \"data\": {\n    \"id\": 1,\n    \"firstName\": \"Carlos Alberto\",\n    \"lastName\": \"Pérez Gómez\",\n    \"identificationType\": \"CC\",\n    \"identificationNumber\": \"1234567890\",\n    \"email\": \"carlos.alberto@example.com\",\n    \"birthDate\": \"1990-05-15\",\n    \"updatedAt\": \"2024-01-15T11:00:00\"\n  }\n}"
+            },
+            {
+              "name": "404 No encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Cliente no encontrado con ID: 999\",\n  \"timestamp\": \"2024-01-15T10:30:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Eliminar cliente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", "{{customerId}}"]
+            },
+            "description": "Elimina un cliente. Falla con 422 si el cliente tiene cuentas asociadas. Spring Data REST."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "body": ""
+            },
+            {
+              "name": "422 Tiene cuentas asociadas",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "body": "{\n  \"status\": 422,\n  \"error\": \"Unprocessable Entity\",\n  \"message\": \"No se puede eliminar un cliente que tiene cuentas asociadas\",\n  \"timestamp\": \"2024-01-15T10:30:00\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🏦 Cuentas",
+      "description": "Gestión de cuentas bancarias. El número de cuenta se genera automáticamente: `53XXXXXXXX` para ahorros y `33XXXXXXXX` para corriente.",
+      "item": [
+        {
+          "name": "Listar todas las cuentas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/accounts?page=0&size=20&sort=id,desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" },
+                { "key": "sort", "value": "id,desc" }
+              ]
+            },
+            "description": "Retorna todas las cuentas paginadas. Spring Data REST."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener cuenta por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "{{accountId}}"]
+            },
+            "description": "Retorna una cuenta por su ID. Spring Data REST."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"accountNumber\": \"5300000001\",\n  \"accountType\": \"SAVINGS\",\n  \"status\": \"ACTIVE\",\n  \"balance\": 150000.00,\n  \"customerId\": 1,\n  \"createdAt\": \"2024-01-15T10:35:00\",\n  \"_links\": {\n    \"self\": { \"href\": \"http://localhost:9000/api/v1/accounts/1\" }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cuentas de un cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/search/byCustomer?customerId={{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "search", "byCustomer"],
+              "query": [
+                { "key": "customerId", "value": "{{customerId}}", "description": "ID del cliente" }
+              ]
+            },
+            "description": "Retorna todas las cuentas asociadas a un cliente específico. Endpoint de búsqueda personalizado de Spring Data REST."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"_embedded\": {\n    \"accounts\": [\n      {\n        \"id\": 1,\n        \"accountNumber\": \"5300000001\",\n        \"accountType\": \"SAVINGS\",\n        \"status\": \"ACTIVE\",\n        \"balance\": 150000.00,\n        \"customerId\": 1\n      },\n      {\n        \"id\": 2,\n        \"accountNumber\": \"3300000001\",\n        \"accountType\": \"CHECKING\",\n        \"status\": \"ACTIVE\",\n        \"balance\": 50000.00,\n        \"customerId\": 1\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Consultar saldo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{accountId}}/balance",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "{{accountId}}", "balance"]
+            },
+            "description": "Retorna el saldo actual de una cuenta."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": 200,\n  \"data\": {\n    \"id\": 1,\n    \"accountNumber\": \"5300000001\",\n    \"accountType\": \"SAVINGS\",\n    \"status\": \"ACTIVE\",\n    \"balance\": 150000.00,\n    \"customerId\": 1\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Crear cuenta",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"SAVINGS\",\n  \"customerId\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts"]
+            },
+            "description": "Crea una cuenta bancaria para un cliente.\n\n**Tipos de cuenta:**\n- `SAVINGS` → número de cuenta `53XXXXXXXX`, saldo mínimo $0\n- `CHECKING` → número de cuenta `33XXXXXXXX`\n\nEl número de cuenta se genera automáticamente con una secuencia de BD. El saldo inicial es `0`."
+          },
+          "response": [
+            {
+              "name": "201 Created — SAVINGS",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": 201,\n  \"message\": \"Cuenta creada exitosamente\",\n  \"data\": {\n    \"id\": 1,\n    \"accountNumber\": \"5300000001\",\n    \"accountType\": \"SAVINGS\",\n    \"status\": \"ACTIVE\",\n    \"balance\": 0.00,\n    \"customerId\": 1,\n    \"createdAt\": \"2024-01-15T10:35:00\"\n  }\n}"
+            },
+            {
+              "name": "201 Created — CHECKING",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": 201,\n  \"message\": \"Cuenta creada exitosamente\",\n  \"data\": {\n    \"id\": 2,\n    \"accountNumber\": \"3300000001\",\n    \"accountType\": \"CHECKING\",\n    \"status\": \"ACTIVE\",\n    \"balance\": 0.00,\n    \"customerId\": 1,\n    \"createdAt\": \"2024-01-15T10:36:00\"\n  }\n}"
+            },
+            {
+              "name": "404 Cliente no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Cliente no encontrado con ID: 999\",\n  \"timestamp\": \"2024-01-15T10:30:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Eliminar cuenta (inactivar)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "{{accountId}}"]
+            },
+            "description": "Cambia el estado de la cuenta a `INACTIVE`. Una cuenta inactiva no puede recibir ni enviar transacciones. Spring Data REST."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "💸 Transacciones",
+      "description": "Registro y consulta de movimientos financieros. Solo se pueden hacer transacciones en cuentas ACTIVE.",
+      "item": [
+        {
+          "name": "Listar todas las transacciones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/transactions?page=0&size=20&sort=createdAt,desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" },
+                { "key": "sort", "value": "createdAt,desc" }
+              ]
+            },
+            "description": "Retorna todas las transacciones paginadas. Spring Data REST."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener transacción por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/transactions/{{transactionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions", "{{transactionId}}"]
+            },
+            "description": "Retorna una transacción por su ID. Spring Data REST."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"transactionType\": \"DEPOSIT\",\n  \"amount\": 50000.00,\n  \"balanceAfter\": 50000.00,\n  \"description\": \"Depósito inicial\",\n  \"accountId\": 1,\n  \"createdAt\": \"2024-01-15T10:40:00\",\n  \"_links\": {\n    \"self\": { \"href\": \"http://localhost:9000/api/v1/transactions/1\" }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Transacciones de una cuenta",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/transactions/search/byAccount?accountId={{accountId}}&page=0&size=10&sort=createdAt,desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions", "search", "byAccount"],
+              "query": [
+                { "key": "accountId", "value": "{{accountId}}", "description": "ID de la cuenta" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sort", "value": "createdAt,desc" }
+              ]
+            },
+            "description": "Retorna el historial de movimientos de una cuenta específica, ordenado del más reciente al más antiguo. Endpoint de búsqueda personalizado de Spring Data REST."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"_embedded\": {\n    \"transactions\": [\n      {\n        \"id\": 3,\n        \"transactionType\": \"WITHDRAWAL\",\n        \"amount\": 20000.00,\n        \"balanceAfter\": 130000.00,\n        \"description\": \"Retiro cajero\",\n        \"accountId\": 1,\n        \"createdAt\": \"2024-01-15T14:00:00\"\n      },\n      {\n        \"id\": 1,\n        \"transactionType\": \"DEPOSIT\",\n        \"amount\": 150000.00,\n        \"balanceAfter\": 150000.00,\n        \"description\": \"Depósito inicial\",\n        \"accountId\": 1,\n        \"createdAt\": \"2024-01-15T10:40:00\"\n      }\n    ]\n  },\n  \"page\": { \"size\": 10, \"totalElements\": 2, \"totalPages\": 1, \"number\": 0 }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Registrar consignación (DEPOSIT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionType\": \"DEPOSIT\",\n  \"amount\": 150000.00,\n  \"description\": \"Consignación en efectivo\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transactions/account/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions", "account", "{{accountId}}"]
+            },
+            "description": "Registra una consignación en la cuenta. El saldo se incrementa en el monto indicado.\n\n**Reglas:**\n- La cuenta debe estar en estado `ACTIVE`\n- El monto mínimo es `0.01`\n- El monto máximo es `999999999999999.99`"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": 201,\n  \"message\": \"Transacción registrada exitosamente\",\n  \"data\": {\n    \"id\": 1,\n    \"transactionType\": \"DEPOSIT\",\n    \"amount\": 150000.00,\n    \"balanceAfter\": 150000.00,\n    \"description\": \"Consignación en efectivo\",\n    \"accountId\": 1,\n    \"createdAt\": \"2024-01-15T10:40:00\"\n  }\n}"
+            },
+            {
+              "name": "422 Cuenta inactiva",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "body": "{\n  \"status\": 422,\n  \"error\": \"Unprocessable Entity\",\n  \"message\": \"La cuenta está inactiva\",\n  \"timestamp\": \"2024-01-15T10:30:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Registrar retiro (WITHDRAWAL)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionType\": \"WITHDRAWAL\",\n  \"amount\": 50000.00,\n  \"description\": \"Retiro cajero automático\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transactions/account/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions", "account", "{{accountId}}"]
+            },
+            "description": "Registra un retiro de la cuenta. El saldo disminuye en el monto indicado.\n\n**Reglas:**\n- La cuenta debe estar en estado `ACTIVE`\n- El saldo después del retiro no puede ser negativo (aplica a cuentas de ahorro)\n- El monto mínimo es `0.01`"
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": 201,\n  \"message\": \"Transacción registrada exitosamente\",\n  \"data\": {\n    \"id\": 2,\n    \"transactionType\": \"WITHDRAWAL\",\n    \"amount\": 50000.00,\n    \"balanceAfter\": 100000.00,\n    \"description\": \"Retiro cajero automático\",\n    \"accountId\": 1,\n    \"createdAt\": \"2024-01-15T11:00:00\"\n  }\n}"
+            },
+            {
+              "name": "422 Fondos insuficientes",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "body": "{\n  \"status\": 422,\n  \"error\": \"Unprocessable Entity\",\n  \"message\": \"Fondos insuficientes. Saldo actual: $100000.00, monto solicitado: $200000.00\",\n  \"timestamp\": \"2024-01-15T11:00:00\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
