@@ -11,6 +11,9 @@ dist-server/
 # Environment local overrides
 src/environments/environment.local.ts
 
+# Replit artifact config (local only)
+.replit-artifact/
+
 # IDE
 .idea/
 .vscode/

@@ -1,59 +1,55 @@
-# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
-# compiled output
-dist
-tmp
-out-tsc
+# ── Build output ─────────────────────────────────────────
+dist/
+tmp/
+out-tsc/
 *.tsbuildinfo
-.expo
-.expo-shared
 
-# Angular build cache
+# ── Angular build cache ───────────────────────────────────
 .angular/
 */.angular/
 
-# dependencies
-node_modules
-
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
-/typings
-
-# System Files
-.DS_Store
-Thumbs.db
-
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
-
-# Replit
-.cache/
-.local/
-
-# Java / Maven
+# ── Java / Maven ──────────────────────────────────────────
 backend/target/
 *.class
 *.jar
 *.war
+
+# ── Dependencies ──────────────────────────────────────────
+node_modules/
+
+# ── Replit (local environment only, not needed on GitHub) ─
+.replit
+.replitignore
+replit.md
+.agents/
+.cache/
+.local/
+scripts/
+attached_assets/
+artifacts/api-server/
+
+# ── IDEs ──────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.launch
+
+# ── OS ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Logs ──────────────────────────────────────────────────
+npm-debug.log
+yarn-error.log
+*.log
+
+# ── Misc ──────────────────────────────────────────────────
+.sass-cache/
+coverage/
+/typings
