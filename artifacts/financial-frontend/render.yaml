@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: financial-frontend
+    env: static
+    rootDir: artifacts/financial-frontend
+    buildCommand: >
+      pnpm install --frozen-lockfile &&
+      sed -i "s|https://RENDER_BACKEND_URL|${API_URL}|g" src/environments/environment.prod.ts &&
+      NG_CLI_ANALYTICS=false npx ng build --configuration production
+    staticPublishPath: dist/public
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    envVars:
+      - key: API_URL
+        sync: false

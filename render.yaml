@@ -1,3 +1,11 @@
+# =============================================================
+# render.yaml — Despliegue COMBINADO (backend + frontend + BD)
+#
+# Para despliegue SEPARADO usa:
+#   Backend  → backend/render.yaml
+#   Frontend → artifacts/financial-frontend/render.yaml
+# =============================================================
+
 databases:
   - name: financial-db
     plan: free
